@@ -1,0 +1,95 @@
+aviz-nodes-list ul {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    overflow: scroll;
+}
+
+aviz-nodes-list li:not(:last-child) {
+    border-bottom-color: #ababab;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+aviz-nodes-list li.disabled:not(:last-child) {
+    border-bottom-color: #8a8a8a;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+aviz-nodes-list .breadcrumbs span.circle {
+    border-radius: 10px;
+    width: 10px;
+    height: 10px;
+    background-color: #ababab;
+    margin-left: 5px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+aviz-nodes-list li {
+    list-style: none;
+    height: 100px;
+    background-color: #202929;
+}
+
+aviz-nodes-list li .transform {
+    font-size: x-small;
+    background-color: #3f4a4a;
+    padding-left: 5px;
+    padding-bottom: 8px;
+}
+
+aviz-nodes-list li .name {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    padding-left: 5px;
+    font-weight: bold;
+    display: block;
+}
+
+aviz-nodes-list a.expand {
+    font-weight: lighter;
+    font-size: x-small;
+    text-decoration: underline;
+    float: right;
+    padding-right: 5px;
+}
+
+aviz-nodes-list li .transform .scale,
+aviz-nodes-list li .transform .position,
+aviz-nodes-list li .transform .rotation {
+    padding-top: 3px;
+    display: block;
+}
+
+aviz-nodes-list li .transform .scale div.value,
+aviz-nodes-list li .transform .position div.value,
+aviz-nodes-list li .transform .rotation div.value {
+    width: 30px;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: right;
+    display: inline-block;
+    padding-right: 10px;
+    margin-right: 10px;
+
+}
+
+aviz-nodes-list li .transform .scale .transform-label,
+aviz-nodes-list li .transform .position .transform-label,
+aviz-nodes-list li .transform .rotation .transform-label {
+    background-color: darkslategrey;
+    border-color: whitesmoke;
+    border-style: solid;
+    border-width: 1px;
+    width: 7px;
+    padding: 2px;
+    padding-left: 4px;
+    margin-right: 10px;
+    display: inline-block;
+}

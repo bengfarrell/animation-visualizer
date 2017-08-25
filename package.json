@@ -1,0 +1,7 @@
+{
+  "name": "animation-visualizer",
+  "version": "0.0.1",
+  "dependencies": {
+    "macgyvr": "^0.1.1"
+  }
+}

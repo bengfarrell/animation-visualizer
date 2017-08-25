@@ -1,0 +1,20 @@
+aviz-samplers-list,
+aviz-channels-list,
+aviz-nodes-list {
+    width: 250px;
+    height: 400px;
+    display: inline-block;
+}
+
+body {
+    background-color: rgba(0,0,0,0.75);
+    padding: 10px;
+    color: whitesmoke;
+    font-family: "Adobe Clean";
+    font-size: small;
+    margin: 10px;
+}
+
+.hidden {
+    display: none !important;
+}
