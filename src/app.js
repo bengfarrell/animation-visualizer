@@ -12,7 +12,7 @@ export default class Application {
        // this.config.components.samplers.data = data;
        // this.config.components.channels.data = data;
         this.config.components.timeline.data = event;
-       // this.config.components.nodes.data = event.nodes;
+        this.config.components.nodes.data = event.nodes;
     }
 
 

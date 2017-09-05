@@ -8,9 +8,10 @@ class AnimationTimeline extends HTMLElement {
         this.dom = {};
 
         this.ticks = 1/10; // of a second
-        this.zoomLevel = 200;
+        this.pixelsPerSecond = 200;
         this.startTime = 0;
         this.endTime = 0;
+        this.duration = 0;
     }
 
     connectedCallback() {
@@ -30,21 +31,24 @@ class AnimationTimeline extends HTMLElement {
         let ctx = canvas.getContext('2d');
         ctx.fillStyle = 'yellow';
         for (let c = 0; c < data.length; c++) {
-            ctx.fillRect(data[c].time * this.zoomLevel, 0, 3, 5);
+            ctx.fillRect(data[c].time * this.pixelsPerSecond, 0, 3, 5);
         }
         trackcontainer.appendChild(tracklabel);
         trackcontainer.appendChild(canvas);
         this.dom.container.appendChild(trackcontainer);
     }
 
-    createTimelineLabel(duration) {
+    createTimelineLabel() {
         let canvas = document.createElement('CANVAS');
-        canvas.width = (this.endTime - this.startTime) * this.zoomLevel;
+        canvas.width = this.duration * this.pixelsPerSecond;
         canvas.height = 15;
         let ctx = canvas.getContext('2d');
         ctx.fillStyle = 'white';
-        for (let c = 0; c < duration * this.ticks; c++) {
-            ctx.fillRect(c * this.zoomLevel, 0, 2, 15);
+
+
+
+        for (let c = 0; c < this.duration; c+= this.ticks) {
+            ctx.fillRect(c * this.pixelsPerSecond, 0, 2, 15);
         }
         this.dom.axislabel.appendChild(canvas);
     }
@@ -56,7 +60,8 @@ class AnimationTimeline extends HTMLElement {
         let anim = this.createTimelineDataModel(gltf.animations[0]);
         this.startTime = anim.start;
         this.endTime = anim.end;
-        this.createTimelineLabel(anim.duration);
+        this.duration = anim.duration;
+        this.createTimelineLabel();
         for (let track in anim.tracks) {
             this.createTrack(track, anim.tracks[track]);
         }
