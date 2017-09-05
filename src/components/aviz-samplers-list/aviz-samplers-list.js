@@ -54,9 +54,16 @@ class AnimationSamplers extends HTMLElement {
 
     set data(data) {
         for (let c = 0; c < data.samplers.length; c++) {
-            // probably a faulty assumption, but use just min for now (min/max acts like a bounding box
-            let inputAccessor = data.accessors[data.samplers[c].input].min;
-            let outputAccessor = data.accessors[data.samplers[c].output].min;
+            let inputAccessor = data.accessors[data.samplers[c].input];
+            let inputBuffer = data.bufferViews[inputAccessor.bufferView];
+
+            let outputAccessor = data.accessors[data.samplers[c].output];
+            let outputBuffer = data.bufferViews[outputAccessor.bufferView];
+
+            //console.log(typeof data.buffers[inputBuffer.buffer].data)
+            ///let inputData = new Uint8Array(data.buffers[inputBuffer.buffer].data, inputBuffer.byteOffset, inputBuffer.byteLength);
+            /*console.log( data.buffers[0].data.subarray(inputBuffer.byteOffset, inputBuffer.byteLength)) );
+
             let channel;
             let node;
             for (let d = 0; d < data.channels.length; d++) {
@@ -64,7 +71,7 @@ class AnimationSamplers extends HTMLElement {
                     channel = data.channels[c];
                     node = data.nodes[channel.target.node];
                 }
-            }
+            }*/
 
             let input, output, delta;
             let el = document.createElement('li');
@@ -93,6 +100,29 @@ class AnimationSamplers extends HTMLElement {
 
             this.dom.list.appendChild(el);
         }
+    }
+
+    /**
+     * @param array
+     * @returns {string}
+     * stolen from https://github.com/donmccurdy/three-gltf-viewer/blob/master/lib/GLTFLoader.js
+     */
+    convertUint8ArrayToString( array ) {
+
+        if ( window.TextDecoder !== undefined ) {
+            return new TextDecoder().decode( array );
+        }
+
+        // Avoid the String.fromCharCode.apply(null, array) shortcut, which
+        // throws a "maximum call stack size exceeded" error for large arrays.
+
+        var s = '';
+
+        for ( var i = 0, il = array.length; i < il; i ++ ) {
+            s += String.fromCharCode( array[ i ] );
+        }
+
+        return s;
     }
 
     disconnectedCallback() {}

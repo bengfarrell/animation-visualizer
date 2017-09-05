@@ -14,22 +14,29 @@
     <script src="src/components/aviz-nodes-list/aviz-nodes-list.js"></script>
     <link href="src/components/aviz-nodes-list/aviz-nodes-list.css" rel="stylesheet" />
 
+    <script src="src/components/aviz-timeline/aviz-timeline.js"></script>
+    <link href="src/components/aviz-timeline/aviz-timeline.css" rel="stylesheet" />
+
+
     <link href="src/global.css" rel="stylesheet" />
 </head>
 <body>
 
-<aviz-samplers-list></aviz-samplers-list>
+<!--<aviz-samplers-list></aviz-samplers-list>
 <aviz-channels-list></aviz-channels-list>
-<aviz-nodes-list></aviz-nodes-list>
+<aviz-nodes-list></aviz-nodes-list>-->
+
+<aviz-timeline></aviz-timeline>
 
 <script>
     var loader = new BrowserESModuleLoader();
     loader.import('./src/app.js').then(function(App) {
         var app = new App.default( {
             components: {
+                timeline: document.querySelector('aviz-timeline'),
                 samplers: document.querySelector('aviz-samplers-list'),
                 channels: document.querySelector('aviz-channels-list'),
-                nodes: document.querySelector('aviz-nodes-list'),
+                nodes: document.querySelector('aviz-nodes-list')
             }
         } );
     });
