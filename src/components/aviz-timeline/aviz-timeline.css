@@ -1,3 +1,7 @@
+aviz-timeline {
+    font-size: x-small;
+}
+
 aviz-timeline .timeline {
     height: calc(100% - 4px);
     width: calc(100% - 114px);
@@ -54,8 +58,36 @@ aviz-timeline .keyframe-info {
     background-color: #466c78;
 }
 
-aviz-timeline .keyframe-info .item {
+aviz-timeline .keyframe-info .item .label {
+    font-weight: bolder;
+    width: 20px;
+    display: inline-block;
+}
 
+aviz-timeline .keyframe-info .item {
+    border-left-style: solid;
+    border-left-width: 5px;
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+aviz-timeline .keyframe-info .item .axis {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: whitesmoke;
+    padding-top: 5px;
+}
+
+aviz-timeline .keyframe-info .item.position {
+    border-left-color: #00ff00;
+}
+
+aviz-timeline .keyframe-info .item.rotation {
+    border-left-color: #ffa500;
+}
+
+aviz-timeline .keyframe-info .item.scale {
+    border-left-color: #ffff00;
 }
 
 aviz-timeline input[type=range] {

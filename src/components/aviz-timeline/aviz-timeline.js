@@ -6,7 +6,9 @@ class AnimationTimeline extends HTMLElement {
         this.template = '<div class="timeline">\
                             <div class="timeline-view"></div> \
                             <div class="timeline-timelabels">\
-                                <canvas></canvas>\
+                                <div class="tick-container">\
+                                    <canvas></canvas>\
+                                </div>\
                                 <input class="zoom" min="20" max="1000" value="200" type="range"></div>\
                             </div>\
                         </div>\
@@ -16,21 +18,24 @@ class AnimationTimeline extends HTMLElement {
                             </div>\
                             <div class="item position">\
                                 <h4>Position</h4>\
-                                <div>x: <span class="x-val">-</span></div>\
-                                <div>y: <span class="y-val">-</span></div>\
-                                <div>z: <span class="z-val">-</span></div>\
+                                <div class="axis"><span class="label">x</span><span class="x-val">-</span></div>\
+                                <div class="axis"><span class="label">y</span><span class="y-val">-</span></div>\
+                                <div class="axis"><span class="label">z</span><span class="z-val">-</span></div>\
+                                <div class="axis"><span class="label">\u25B2</span><span class="d-val">-</span></div>\
                             </div>\
                             <div class="item rotation">\
                                 <h4>Rotation</h4>\
-                                <div>x: <span class="x-val">-</span></div>\
-                                <div>y: <span class="y-val">-</span></div>\
-                                <div>z: <span class="z-val">-</span></div>\
+                                <div class="axis"><span class="label">x</span><span class="x-val">-</span></div>\
+                                <div class="axis"><span class="label">y</span><span class="y-val">-</span></div>\
+                                <div class="axis"><span class="label">z</span><span class="z-val">-</span></div>\
+                                <div class="axis"><span class="label">\u25B2</span><span class="d-val">-</span></div>\
                             </div>\
                             <div class="item scale">\
                                 <h4>Scale</h4>\
-                                <div>x: <span class="x-val">-</span></div>\
-                                <div>y: <span class="y-val">-</span></div>\
-                                <div>z: <span class="z-val">-</span></div>\
+                                <div class="axis"><span class="label">x</span><span class="x-val">-</span></div>\
+                                <div class="axis"><span class="label">y</span><span class="y-val">-</span></div>\
+                                <div class="axis"><span class="label">z</span><span class="z-val">-</span></div>\
+                                <div class="axis"><span class="label">\u25B2</span><span class="d-val">-</span></div>\
                             </div>\
                         </div>';
         this.dom = {};
@@ -47,7 +52,7 @@ class AnimationTimeline extends HTMLElement {
     connectedCallback() {
         this.innerHTML = this.template;
         this.dom.container = this.querySelector('.timeline-view');
-        this.dom.axislabel = this.querySelector('.timeline-timelabels');
+        this.dom.axislabel = this.querySelector('.timeline-timelabels .tick-container');
         this.dom.zoomSlider = this.querySelector('.zoom');
         this.dom.timelineZoomLabel = this.querySelector('.timeline-timelabels canvas');
 
@@ -56,17 +61,20 @@ class AnimationTimeline extends HTMLElement {
             position: {
                 x: this.querySelector('.keyframe-info .position .x-val'),
                 y: this.querySelector('.keyframe-info .position .y-val'),
-                z: this.querySelector('.keyframe-info .position .z-val')
+                z: this.querySelector('.keyframe-info .position .z-val'),
+                d: this.querySelector('.keyframe-info .position .d-val')
             },
             rotation: {
                 x: this.querySelector('.keyframe-info .rotation .x-val'),
                 y: this.querySelector('.keyframe-info .rotation .y-val'),
-                z: this.querySelector('.keyframe-info .rotation .z-val')
+                z: this.querySelector('.keyframe-info .rotation .z-val'),
+                d: this.querySelector('.keyframe-info .rotation .d-val')
             },
             scale: {
                 x: this.querySelector('.keyframe-info .scale .x-val'),
                 y: this.querySelector('.keyframe-info .scale .y-val'),
-                z: this.querySelector('.keyframe-info .scale .z-val')
+                z: this.querySelector('.keyframe-info .scale .z-val'),
+                d: this.querySelector('.keyframe-info .scale .d-val')
             }
         };
 
@@ -107,8 +115,6 @@ class AnimationTimeline extends HTMLElement {
             }
             if (data[c].transform.translation) {
                 let alpha = (data[c].transform.deltas.position - this.deltaRanges[name].position.min) / (this.deltaRanges[name].position.max - this.deltaRanges[name].position.min);
-                if (c === 0) {console.log(alpha ? alpha : 0);}
-
                 ctx.fillStyle = `rgba(255, 165, 0, ${alpha ? alpha : 0})`;
                 ctx.fillRect(data[c].time * this.pixelsPerSecond, 6, 5, 5);
                 ctx.strokeStyle = 'rgba(255, 165, 0, 1)';
@@ -289,6 +295,7 @@ class AnimationTimeline extends HTMLElement {
                     this.dom.info.position.x.innerText = track[c].transform.translation.x.toFixed(3);
                     this.dom.info.position.y.innerText = track[c].transform.translation.y.toFixed(3);
                     this.dom.info.position.z.innerText = track[c].transform.translation.z.toFixed(3);
+                    this.dom.info.position.d.innerText = track[c].transform.deltas.position.toFixed(3);
                 } else {
                     this.clearInfoValues('position');
                 }
@@ -297,6 +304,7 @@ class AnimationTimeline extends HTMLElement {
                     this.dom.info.rotation.x.innerText = track[c].transform.rotation.x.toFixed(3);
                     this.dom.info.rotation.y.innerText = track[c].transform.rotation.y.toFixed(3);
                     this.dom.info.rotation.z.innerText = track[c].transform.rotation.z.toFixed(3);
+                    this.dom.info.rotation.d.innerText = track[c].transform.deltas.rotation.toFixed(3);
                 } else {
                     this.clearInfoValues('rotation');
                 }
@@ -305,6 +313,7 @@ class AnimationTimeline extends HTMLElement {
                     this.dom.info.scale.x.innerText = track[c].transform.scale.x.toFixed(3);
                     this.dom.info.scale.y.innerText = track[c].transform.scale.y.toFixed(3);
                     this.dom.info.scale.z.innerText = track[c].transform.scale.z.toFixed(3);
+                    this.dom.info.scale.d.innerText = track[c].transform.deltas.scaling.toFixed(3);
                 } else {
                     this.clearInfoValues('scale');
                 }
@@ -322,6 +331,7 @@ class AnimationTimeline extends HTMLElement {
             this.dom.info[transformTypes].x.innerText = '-';
             this.dom.info[transformTypes].y.innerText = '-';
             this.dom.info[transformTypes].z.innerText = '-';
+            this.dom.info[transformTypes].d.innerText = '-';
         }
     }
 
