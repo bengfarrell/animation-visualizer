@@ -86,36 +86,38 @@ export default class GLTFAnimationParser extends EventListener {
         if (type === 'keyframes') {
             return inputValues;
         } else {
-            let vec;
             let counter = 0;
             let transforms = [];
+            let vec;
+
             for (let c = 0; c < inputValues.length; c++) {
                 switch (counter) {
                     case 0:
-                        vec = {};
+                        transforms.push({});
+                        vec = transforms[transforms.length-1];
                         vec.x = inputValues[c];
+                        counter ++;
                         break;
 
                     case 1:
                         vec.y = inputValues[c];
+                        counter ++;
                         break;
 
                     case 2:
                         vec.z = inputValues[c];
 
+                        counter ++;
                         if (type !== 'rotation') {
                             counter = 0;
-                            transforms.push(vec);
                         }
                         break;
 
                     case 3:
                         vec.w = inputValues[c];
                         counter = 0;
-                        transforms.push(vec);
                         break;
                 }
-                counter ++;
             }
             return transforms;
         }

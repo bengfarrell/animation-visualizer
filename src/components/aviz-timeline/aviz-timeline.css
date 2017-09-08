@@ -1,22 +1,132 @@
-aviz-timeline .visualization {
-    width: 100%;
-    height: 100%;
+aviz-timeline .timeline {
+    height: calc(100% - 4px);
+    width: calc(100% - 114px);
+    display: inline-block;
 }
 
-aviz-timeline .timeline-track span {
-    width: 200px;
+aviz-timeline .timeline-track {
+    background-color: #3f4a4a;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+aviz-timeline .timeline-track div.track-label {
+    font-size: x-small;
     white-space: nowrap;
     text-overflow: ellipsis;
+    padding: 5px;
+    background-color: #3f4a4a;
+}
+
+aviz-timeline .timeline-track canvas {
+    padding: 2px;
 }
 
 aviz-timeline .timeline-view {
-    height: 200px;
-    width: 600px;
+    height: calc(100% - 34px);
+    width: calc(100% - 2px);
     overflow: scroll;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
+    background-color: #202929;
 }
 
 aviz-timeline .timeline-timelabels {
-    height: 15px;
-    width: 600px;
-    overflow: scroll;
+    height: 34px;
+    width: calc(100% - 2px);
+    overflow: hidden;
+    background-color: #466c78;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
+
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: whitesmoke;
+}
+
+aviz-timeline .keyframe-info {
+    width: 100px;
+    height: 100%;
+    float: right;
+    padding-left: 10px;
+    background-color: #466c78;
+}
+
+aviz-timeline .keyframe-info .item {
+
+}
+
+aviz-timeline input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background-color: #466c78;
+    margin-top: 5px;
+    margin-left: -1px;
+}
+aviz-timeline input[type=range]:focus {
+    outline: none;
+}
+aviz-timeline input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: #5b8693;
+    border-radius: 4.5px;
+}
+aviz-timeline input[type=range]::-webkit-slider-thumb {
+    height: 5px;
+    width: 5px;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: 1.3px;
+}
+aviz-timeline input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #6793a1;
+}
+aviz-timeline input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: #5b8693;
+    border-radius: 4.5px;
+}
+aviz-timeline input[type=range]::-moz-range-thumb {
+    height: 5px;
+    width: 5px;
+    border-radius: 12px;
+    background: #ffffff;
+    cursor: pointer;
+}
+aviz-timeline input[type=range]::-ms-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+aviz-timeline input[type=range]::-ms-fill-lower {
+    background: #517883;
+    border-radius: 9px;
+}
+aviz-timeline input[type=range]::-ms-fill-upper {
+    background: #5b8693;
+    border-radius: 9px;
+}
+aviz-timeline input[type=range]::-ms-thumb {
+    width: 5px;
+    border-radius: 12px;
+    background: #ffffff;
+    cursor: pointer;
+    height: 5px;
+}
+aviz-timeline input[type=range]:focus::-ms-fill-lower {
+    background: #5b8693;
+}
+aviz-timeline input[type=range]:focus::-ms-fill-upper {
+    background: #6793a1;
 }

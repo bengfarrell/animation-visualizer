@@ -1,8 +1,13 @@
 aviz-samplers-list,
 aviz-channels-list,
-aviz-timeline,
 aviz-nodes-list {
     width: 250px;
+    height: 400px;
+    display: inline-block;
+}
+
+aviz-timeline {
+    width: 800px;
     height: 400px;
     display: inline-block;
 }
