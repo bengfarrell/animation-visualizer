@@ -13,8 +13,9 @@ class AnimationTimeline extends HTMLElement {
                             </div>\
                         </div>\
                         <div class="keyframe-info">\
-                            <div class="item time">\
-                                <h4>Time: <span class="val">-</span></h4>\
+                            <div class="item">\
+                                <h4 class="time">Time: <span class="val">-</span></h4>\
+                                <h4 class="frame">Frame: <span class="val">-/-</span></h4>\
                             </div>\
                             <div class="item position">\
                                 <h4>Position</h4>\
@@ -42,6 +43,10 @@ class AnimationTimeline extends HTMLElement {
 
         this.ticks = .1; // of a second
         this.pixelsPerSecond = 200;
+        this.keyframeSize = {
+            width: 5,
+            height: 5
+        };
         this.startTime = 0;
         this.endTime = 0;
         this.duration = 0;
@@ -58,6 +63,7 @@ class AnimationTimeline extends HTMLElement {
 
         this.dom.info = {
             time: this.querySelector('.keyframe-info .time .val'),
+            frame: this.querySelector('.keyframe-info .frame .val'),
             position: {
                 x: this.querySelector('.keyframe-info .position .x-val'),
                 y: this.querySelector('.keyframe-info .position .y-val'),
@@ -101,40 +107,40 @@ class AnimationTimeline extends HTMLElement {
 
     drawTrack(name, data) {
         let canvas = this.dom['track-' + name];
-        canvas.width = this.duration * this.pixelsPerSecond;
+        canvas.width = this.duration * this.pixelsPerSecond + this.keyframeSize.width;
         canvas.height = 16;
         let ctx = canvas.getContext('2d');
         for (let c = 0; c < data.length; c++) {
             if (data[c].transform.rotation) {
                 let alpha = (data[c].transform.deltas.rotation - this.deltaRanges[name].rotation.min) / (this.deltaRanges[name].rotation.max - this.deltaRanges[name].rotation.min);
                 ctx.fillStyle = `rgba(0, 255, 0, ${alpha ? alpha : 0})`;
-                ctx.fillRect(data[c].time * this.pixelsPerSecond, 0, 5, 5);
+                ctx.fillRect(data[c].time * this.pixelsPerSecond, 0, this.keyframeSize.width, this.keyframeSize.height);
                 ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
                 ctx.lineWidth = .25;
-                ctx.strokeRect(data[c].time * this.pixelsPerSecond, 0, 5, 5);
+                ctx.strokeRect(data[c].time * this.pixelsPerSecond, 0, this.keyframeSize.width, this.keyframeSize.height);
             }
             if (data[c].transform.translation) {
                 let alpha = (data[c].transform.deltas.position - this.deltaRanges[name].position.min) / (this.deltaRanges[name].position.max - this.deltaRanges[name].position.min);
                 ctx.fillStyle = `rgba(255, 165, 0, ${alpha ? alpha : 0})`;
-                ctx.fillRect(data[c].time * this.pixelsPerSecond, 6, 5, 5);
+                ctx.fillRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width+1, this.keyframeSize.width, this.keyframeSize.height);
                 ctx.strokeStyle = 'rgba(255, 165, 0, 1)';
                 ctx.lineWidth = .25;
-                ctx.strokeRect(data[c].time * this.pixelsPerSecond, 6, 5, 5);
+                ctx.strokeRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width+1, this.keyframeSize.width, this.keyframeSize.height);
             }
             if (data[c].transform.scale) {
                 let alpha = (data[c].transform.deltas.scaling - this.deltaRanges[name].scaling.min) / (this.deltaRanges[name].scaling.max - this.deltaRanges[name].scaling.min);
                 ctx.fillStyle = `rgba(255, 255, 0, ${alpha ? alpha : 0})`;
-                ctx.fillRect(data[c].time * this.pixelsPerSecond, 11, 5, 5);
+                ctx.fillRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width*2+1, this.keyframeSize.width, this.keyframeSize.height);
                 ctx.strokeStyle = 'rgba(255, 255, 0, 1)';
                 ctx.lineWidth = .25;
-                ctx.strokeRect(data[c].time * this.pixelsPerSecond, 11, 5, 5);
+                ctx.strokeRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width*2+1, this.keyframeSize.width, this.keyframeSize.height);
             }
         }
     }
 
     drawTimelineLabel() {
         let canvas = this.dom.timelineZoomLabel;
-        canvas.width = this.duration * this.pixelsPerSecond;
+        canvas.width = this.duration * this.pixelsPerSecond + this.keyframeSize.width;
         canvas.height = 15;
         let ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -143,7 +149,7 @@ class AnimationTimeline extends HTMLElement {
         for (let c = this.ticks; c < this.duration; c += this.ticks) {
             let tHeight = 8;
             let tWidth = 1;
-            if (Math.abs(Math.floor(c) - c) < .1) { // just trying to test if an integer, stupid precision loss
+            if (Math.abs(Number(Math.round(c +'e2')+'e-2') === Math.round(c))) { // just trying to test if an integer, stupid precision loss
                 tHeight = 15;
                 tWidth = 3;
             }
@@ -266,12 +272,12 @@ class AnimationTimeline extends HTMLElement {
 
         let labels = this.querySelectorAll('.track-label');
         for (let c = 0; c < labels.length; c++) {
-            labels[c].style.paddingLeft = this.dom.container.scrollLeft + 5 + 'px';
+            labels[c].style.paddingLeft = this.dom.container.scrollLeft + this.keyframeSize.width + 'px';
         }
 
         let tracks = this.querySelectorAll('.timeline-track');
         for (let c = 0; c < tracks.length; c++) {
-            tracks[c].style.width = this.duration * this.pixelsPerSecond + 'px';
+            tracks[c].style.width = this.duration * this.pixelsPerSecond + this.keyframeSize.width + 'px';
         }
     }
 
@@ -281,15 +287,17 @@ class AnimationTimeline extends HTMLElement {
         for (let track in this.anim.tracks) {
             this.drawTrack(track, this.anim.tracks[track]);
         }
+        this.onTimelineScroll(); // need track resizing
     }
 
     onTrackHover(event) {
-        let time = event.offsetX / this.pixelsPerSecond;
-
+        let time = (event.offsetX - this.keyframeSize.width) / this.pixelsPerSecond;
         let track = this.anim.tracks[event.target.dataset.name];
+        let timeIndex;
         for (let c = 0; c < track.length; c++) {
             if (track[c].time >= time) {
                 this.dom.info.time.innerText = track[c].time.toFixed(3);
+                this.dom.info.frame.innerText = (c+1) + ' / ' + track.length;
 
                 if (track[c].transform.translation) {
                     this.dom.info.position.x.innerText = track[c].transform.translation.x.toFixed(3);
