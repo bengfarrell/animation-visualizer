@@ -8,6 +8,9 @@ class AnimationTimeline extends HTMLElement {
         for (let track in this.anim.tracks) {
             this._createTrack(track, this.anim.tracks[track]);
         }
+  
+        this.dom.playbackLine.style.height = this.dom.container.scrollHeight + 'px';
+        this.currentTime = 0;
     }
 
     set currentTime(seconds) {
