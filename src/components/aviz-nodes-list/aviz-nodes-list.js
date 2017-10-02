@@ -24,6 +24,23 @@ class AnimationNodes extends HTMLElement {
         this.addBreadcrumb(this._tree);
     }
 
+    selectNodeByName(name) {
+        for (let c = 0; c < this._list.length; c++) {
+            if (this._list[c].name == name) {
+                let node = this._list[c];
+                this._breadcrumbTrail = [];
+                while (node.parent) {
+                    this._breadcrumbTrail.push(node);
+                    node = node.parent;
+                }
+
+                this._breadcrumbTrail.reverse();
+                this.renderBreadcrumbs();
+                this.renderNode(this._list[c]);
+            }
+        }
+    }
+
     renderNode(node) {
         this.dom.list.innerHTML = '';
         this.dom.header.innerHTML = node.name;

@@ -1,13 +1,33 @@
 class AnimationTimeline extends HTMLElement {
     static get observedAttributes() { return []}
 
+    set data(animation) {
+        this.anim = animation;
+        this._populateDeltas(this.anim);
+        this._drawTimelineLabel();
+        for (let track in this.anim.tracks) {
+            this._createTrack(track, this.anim.tracks[track]);
+        }
+    }
+
+    set currentTime(seconds) {
+        if (this.anim && !this._draggingPlayhead) {
+            this.relativeTime = seconds % this.anim.duration;
+            this.dom.playbackLine.style.left = this.relativeTime * this.pixelsPerSecond + 'px';
+            this.dom.playbackHead.style.left = this.relativeTime * this.pixelsPerSecond - 7 + 'px';
+        }
+    }
+
     constructor() {
         super();
         this.template = '<div class="timeline">\
-                            <div class="timeline-view"></div> \
+                            <div class="timeline-view">\
+                                <div class="playback-line"></div>\
+                            </div> \
                             <div class="timeline-timelabels">\
                                 <div class="tick-container">\
                                     <canvas></canvas>\
+                                    <div class="playback-head"></div>\
                                 </div>\
                                 <input class="zoom" min="20" max="1000" value="200" type="range"></div>\
                             </div>\
@@ -41,16 +61,14 @@ class AnimationTimeline extends HTMLElement {
                         </div>';
         this.dom = {};
 
+        this._draggingPlayhead = false;
+        this.selectedTrack;
         this.ticks = .1; // of a second
         this.pixelsPerSecond = 200;
         this.keyframeSize = {
             width: 5,
             height: 5
         };
-        this.startTime = 0;
-        this.endTime = 0;
-        this.duration = 0;
-
         this.deltaRanges = {};
     }
 
@@ -60,6 +78,8 @@ class AnimationTimeline extends HTMLElement {
         this.dom.axislabel = this.querySelector('.timeline-timelabels .tick-container');
         this.dom.zoomSlider = this.querySelector('.zoom');
         this.dom.timelineZoomLabel = this.querySelector('.timeline-timelabels canvas');
+        this.dom.playbackLine = this.querySelector('.timeline-view .playback-line');
+        this.dom.playbackHead = this.querySelector('.timeline-timelabels .tick-container .playback-head');
 
         this.dom.info = {
             time: this.querySelector('.keyframe-info .time .val'),
@@ -84,30 +104,42 @@ class AnimationTimeline extends HTMLElement {
             }
         };
 
-        this.dom.container.addEventListener('scroll', e => this.onTimelineScroll(e));
-        this.dom.zoomSlider.addEventListener('input', e => this.onZoom(e));
-
+        this.dom.container.addEventListener('scroll', e => this._onTimelineScroll(e));
+        this.dom.zoomSlider.addEventListener('input', e => this._onZoom(e));
+        this.dom.axislabel.addEventListener('mousedown', e => this._onLabelTrackMouseDown(e));
+        this.addEventListener('mouseup', e => this._onLabelTrackMouseUp(e));
+        this.dom.axislabel.addEventListener('mousemove', e => this._onLabelTrackMouseMove(e));
     }
 
-    createTrack(name, data) {
+    _createTrack(name, data) {
         let trackcontainer = document.createElement('DIV');
+        trackcontainer.dataset.name = name;
+        trackcontainer.addEventListener('click', e => this._onTrackClick(e));
+        trackcontainer.addEventListener('mousemove', e => this._onTrackHover(e));
         trackcontainer.className = 'timeline-track';
         let canvas = document.createElement('CANVAS');
-        canvas.dataset.name = name;
-        canvas.addEventListener('mousemove', e => this.onTrackHover(e));
         let tracklabel = document.createElement('DIV');
         tracklabel.classList.add('track-label');
-        tracklabel.innerText = name;
+
+        let trackVisibilityToggle = document.createElement('div');
+        trackVisibilityToggle.classList.add('icon-eye');
+        trackVisibilityToggle.classList.add('on');
+        trackVisibilityToggle.addEventListener('click', e => this._onTrackVisibilityClick(e));
+        tracklabel.appendChild(trackVisibilityToggle);
+
+        let trackName = document.createElement('span');
+        trackName.innerText = name;
+        tracklabel.appendChild(trackName);
         this.dom['track-' + name] = canvas;
-        this.drawTrack(name, data);
+        this._drawTrack(name, data);
         trackcontainer.appendChild(tracklabel);
         trackcontainer.appendChild(canvas);
         this.dom.container.appendChild(trackcontainer);
     }
 
-    drawTrack(name, data) {
+    _drawTrack(name, data) {
         let canvas = this.dom['track-' + name];
-        canvas.width = this.duration * this.pixelsPerSecond + this.keyframeSize.width;
+        canvas.width = this.anim.duration * this.pixelsPerSecond + this.keyframeSize.width;
         canvas.height = 16;
         let ctx = canvas.getContext('2d');
         for (let c = 0; c < data.length; c++) {
@@ -138,15 +170,15 @@ class AnimationTimeline extends HTMLElement {
         }
     }
 
-    drawTimelineLabel() {
+    _drawTimelineLabel() {
         let canvas = this.dom.timelineZoomLabel;
-        canvas.width = this.duration * this.pixelsPerSecond + this.keyframeSize.width;
+        canvas.width = this.anim.duration * this.pixelsPerSecond + this.keyframeSize.width;
         canvas.height = 15;
         let ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
 
-        for (let c = this.ticks; c < this.duration; c += this.ticks) {
+        for (let c = this.ticks; c < this.anim.duration; c += this.ticks) {
             let tHeight = 8;
             let tWidth = 1;
             if (Math.abs(Number(Math.round(c +'e2')+'e-2') === Math.round(c))) { // just trying to test if an integer, stupid precision loss
@@ -157,22 +189,7 @@ class AnimationTimeline extends HTMLElement {
         }
     }
 
-    set data(gltf) {
-        if (!gltf) {
-            throw new Error();
-        }
-        this.anim = this.createTimelineDataModel(gltf.animations[0]);
-        this.startTime = this.anim.start;
-        this.endTime = this.anim.end;
-        this.duration = this.anim.duration;
-        this.populateDeltas(this.anim);
-        this.drawTimelineLabel();
-        for (let track in this.anim.tracks) {
-            this.createTrack(track, this.anim.tracks[track]);
-        }
-    }
-
-    populateDeltas(anim) {
+    _populateDeltas(anim) {
         for (let track in this.anim.tracks) {
             if (!this.deltaRanges[track]) {
                 this.deltaRanges[track] = {};
@@ -222,52 +239,7 @@ class AnimationTimeline extends HTMLElement {
         }
     }
 
-    createTimelineDataModel(animation) {
-        let tracks = {};
-        let startTime = -1;
-        let endTime = -1;
-        for (let c = 0; c < animation.channels.length; c++) {
-            if (!tracks[animation.channels[c].target._nodeRef.name]) {
-                tracks[animation.channels[c].target._nodeRef.name] = [];
-            }
-
-            let currentChannel = tracks[animation.channels[c].target._nodeRef.name];
-
-            for (let d = 0; d < animation.channels[c]._samplerRef._inputValues.length; d++) {
-                let time = animation.channels[c]._samplerRef._inputValues[d];
-                if (startTime === -1 || time < startTime) {
-                    startTime = time;
-                }
-                if (endTime === -1 || time > endTime) {
-                    endTime = time;
-                }
-
-                let keyframe;
-                for (let e = 0; e < currentChannel.length; e++) {
-                    if (currentChannel[e].time === time) {
-                        keyframe = currentChannel[e];
-                    }
-                }
-                if (!keyframe) {
-                    keyframe = { time: time, transform: {}, name: animation.channels[c].target._nodeRef.name };
-                    currentChannel.push(keyframe);
-                }
-
-                let transformType = animation.channels[c].target.path;
-                keyframe.transform[transformType] = animation.channels[c]._samplerRef._outputValues[d];
-
-            }
-        }
-
-        for (let track in tracks) {
-            tracks[track].sort(function(a, b) {
-                return a.time - b.time;
-            });
-        }
-        return { start: startTime, end: endTime, duration: endTime-startTime, tracks: tracks };
-    }
-
-    onTimelineScroll(event) {
+    _onTimelineScroll(event) {
         this.dom.axislabel.scrollLeft = this.dom.container.scrollLeft;
 
         let labels = this.querySelectorAll('.track-label');
@@ -277,22 +249,60 @@ class AnimationTimeline extends HTMLElement {
 
         let tracks = this.querySelectorAll('.timeline-track');
         for (let c = 0; c < tracks.length; c++) {
-            tracks[c].style.width = this.duration * this.pixelsPerSecond + this.keyframeSize.width + 'px';
+            tracks[c].style.width = this.anim.duration * this.pixelsPerSecond + this.keyframeSize.width + 'px';
         }
     }
 
-    onZoom(event) {
+    _onZoom(event) {
         this.pixelsPerSecond = event.target.value;
-        this.drawTimelineLabel();
+        this._drawTimelineLabel();
         for (let track in this.anim.tracks) {
-            this.drawTrack(track, this.anim.tracks[track]);
+            this._drawTrack(track, this.anim.tracks[track]);
         }
-        this.onTimelineScroll(); // need track resizing
+        this._onTimelineScroll(); // need track resizing
     }
 
-    onTrackHover(event) {
+    _onTrackClick(event) {
+        if (this.selectedTrack) {
+            this.selectedTrack.classList.remove('selected');
+        }
+
+        if (this.selectedTrack === event.currentTarget) {
+            this.selectedTrack = null;
+            return;
+        }
+        this.selectedTrack = event.currentTarget;
+        this.selectedTrack.classList.add('selected');
+
+        let e = new CustomEvent(AnimationTimeline.TRACK_SELECTED, { 'detail': { name: event.currentTarget.dataset.name } });
+        this.dispatchEvent(e);
+    }
+
+    _onTrackVisibilityClick(event) {
+        event.stopPropagation();
+        let visible;
+        if (event.target.classList.contains('on')) {
+            event.target.classList.remove('on');
+            event.target.classList.add('off');
+            visible = false;
+        } else {
+            event.target.classList.remove('off');
+            event.target.classList.add('on');
+            visible = true;
+        }
+
+        let event = new CustomEvent(AnimationTimeline.TRACK_PLAYBACK_CHANGED, {
+            'detail': {
+                name: event.target.parentNode.parentNode.dataset.name,
+                visible: visible,
+                playbacktime: this.relativeTime / this.anim.duration
+            }});
+        this.dispatchEvent(event);
+    }
+
+    _onTrackHover(event) {
         let time = (event.offsetX - this.keyframeSize.width) / this.pixelsPerSecond;
-        let track = this.anim.tracks[event.target.dataset.name];
+        let track = this.anim.tracks[event.currentTarget.dataset.name];
         let timeIndex;
         for (let c = 0; c < track.length; c++) {
             if (track[c].time >= time) {
@@ -305,7 +315,7 @@ class AnimationTimeline extends HTMLElement {
                     this.dom.info.position.z.innerText = track[c].transform.translation.z.toFixed(3);
                     this.dom.info.position.d.innerText = track[c].transform.deltas.position.toFixed(3);
                 } else {
-                    this.clearInfoValues('position');
+                    this._clearInfoValues('position');
                 }
 
                 if (track[c].transform.rotation) {
@@ -314,7 +324,7 @@ class AnimationTimeline extends HTMLElement {
                     this.dom.info.rotation.z.innerText = track[c].transform.rotation.z.toFixed(3);
                     this.dom.info.rotation.d.innerText = track[c].transform.deltas.rotation.toFixed(3);
                 } else {
-                    this.clearInfoValues('rotation');
+                    this._clearInfoValues('rotation');
                 }
 
                 if (track[c].transform.scale) {
@@ -323,14 +333,47 @@ class AnimationTimeline extends HTMLElement {
                     this.dom.info.scale.z.innerText = track[c].transform.scale.z.toFixed(3);
                     this.dom.info.scale.d.innerText = track[c].transform.deltas.scaling.toFixed(3);
                 } else {
-                    this.clearInfoValues('scale');
+                    this._clearInfoValues('scale');
                 }
                 return;
             }
         }
     }
 
-    clearInfoValues(transformTypes) {
+    _onLabelTrackMouseDown(event) {
+       this._draggingPlayhead = true;
+    }
+
+    _onLabelTrackMouseUp(event) {
+        if (this._draggingPlayhead) {
+            this._draggingPlayhead = false;
+            let bounds = event.currentTarget.getBoundingClientRect();
+            this._scrubTimeline(event.clientX - bounds.left, true);
+        }
+    }
+
+    _onLabelTrackMouseMove(event) {
+        if (this._draggingPlayhead) {
+            let bounds = event.currentTarget.getBoundingClientRect();
+            this._scrubTimeline(event.clientX - bounds.left, false);
+        }
+    }
+
+    _scrubTimeline(posX, endscrub) {
+        let bounds = event.currentTarget.getBoundingClientRect();
+        this.dom.playbackLine.style.left = posX + 'px';
+        this.dom.playbackHead.style.left = posX - 7 + 'px';
+
+        let e = new CustomEvent(AnimationTimeline.SCRUB_TIMELINE, {
+            'detail': {
+                resumeplayback: endscrub,
+                playbacktime: posX / this.pixelsPerSecond,
+                playbackratio: (posX / this.pixelsPerSecond) / this.anim.duration
+            }});
+        this.dispatchEvent(e);
+    }
+
+    _clearInfoValues(transformTypes) {
         if (typeof transformTypes === 'string') {
             transformTypes = [transformTypes];
         }
@@ -347,6 +390,8 @@ class AnimationTimeline extends HTMLElement {
     attributeChangedCallback(attributeName, oldValue, newValue, namespace) {}
     adoptedCallback(oldDocument, newDocument) {}
 }
-
+AnimationTimeline.TRACK_SELECTED = 'onTrackSelected';
+AnimationTimeline.SCRUB_TIMELINE = 'onScrubTimeline';
+AnimationTimeline.TRACK_PLAYBACK_CHANGED = 'onTrackPlaybackChanged';
 customElements.define('aviz-timeline', AnimationTimeline);
 

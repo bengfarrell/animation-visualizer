@@ -1,5 +1,20 @@
 aviz-timeline {
     font-size: x-small;
+    overflow: hidden;
+}
+
+aviz-timeline .timeline .timeline-view {
+    position: relative;
+}
+
+aviz-timeline .timeline .playback-line {
+    width: 1px;
+    height: 100%;
+    background-color: #7cbfcd;
+    position: absolute;
+    display: inline-block;
+    top: 0px;
+    left: 150px;
 }
 
 aviz-timeline .timeline {
@@ -14,9 +29,14 @@ aviz-timeline .timeline-track {
     margin-bottom: 10px;
 }
 
+aviz-timeline .timeline-track.selected {
+    background-color: #5a5e12;
+}
+
 aviz-timeline .timeline-timelabels .tick-container {
     white-space: nowrap;
     overflow: hidden;
+    position: relative;
 }
 
 aviz-timeline .timeline-track div.track-label {
@@ -24,7 +44,23 @@ aviz-timeline .timeline-track div.track-label {
     white-space: nowrap;
     text-overflow: ellipsis;
     padding: 5px;
-    background-color: #3f4a4a;
+}
+
+aviz-timeline .timeline-track div.track-label .icon-eye {
+    height: 8px;
+    width: 15px;
+    background-size: 15px 8px;
+    margin-right: 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+aviz-timeline .timeline-track div.track-label .icon-eye.on {
+    background-image: url("../../../assets/icon-eye.png");
+}
+
+aviz-timeline .timeline-track div.track-label .icon-eye.off {
+    background-image: url("../../../assets/icon-eye-off.png");
 }
 
 aviz-timeline .timeline-track canvas {
@@ -42,6 +78,7 @@ aviz-timeline .timeline-view {
 }
 
 aviz-timeline .timeline-timelabels {
+    position: relative;
     height: 34px;
     width: calc(100% - 2px);
     overflow: hidden;
@@ -55,12 +92,23 @@ aviz-timeline .timeline-timelabels {
     border-top-color: whitesmoke;
 }
 
+aviz-timeline .timeline-timelabels .playback-head {
+    position: absolute;
+    top: 0px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 7px 10px 7px;
+    border-color: transparent transparent #95d5e6 transparent;
+}
+
 aviz-timeline .keyframe-info {
     width: 100px;
     height: 100%;
     float: right;
     padding-left: 10px;
     background-color: #466c78;
+    overflow-y: scroll;
 }
 
 aviz-timeline .keyframe-info .item .label {

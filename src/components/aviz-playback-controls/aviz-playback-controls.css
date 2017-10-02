@@ -1,0 +1,46 @@
+aviz-playback-controls .button-container {
+    padding: 8px;
+}
+
+aviz-playback-controls .btn {
+    height: 32px;
+    width: 32px;
+    background-color: #466c78;
+    display: inline-block;
+    background-size: 30%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+
+    border-style: solid;
+    border-color: #9f9f9f;
+    border-width: 1px;
+    cursor: pointer;
+}
+
+aviz-playback-controls .btn:hover {
+    background-color: #6b9ba8;
+}
+
+aviz-playback-controls .fast-backward {
+    background-image: url('../../../assets/fast-backward_btn.png');
+}
+
+aviz-playback-controls .fast-forward {
+    background-image: url('../../../assets/fast-forward_btn.png');
+}
+
+aviz-playback-controls .step-backward {
+    background-image: url('../../../assets/step-back_btn.png');
+}
+
+aviz-playback-controls .step-forward {
+    background-image: url('../../../assets/step-forward_btn.png');
+}
+
+aviz-playback-controls .play {
+    background-image: url('../../../assets/play_btn.png');
+}
+
+aviz-playback-controls .pause {
+    background-image: url('../../../assets/pause_btn.png');
+}

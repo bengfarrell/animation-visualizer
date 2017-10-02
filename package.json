@@ -1,6 +1,8 @@
 {
   "name": "animation-visualizer",
   "version": "0.0.1",
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "@webcomponents/custom-elements": "^1.0.4"
   }
 }

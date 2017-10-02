@@ -3,13 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Animation Visualizer</title>
+    <script src="node_modules/@webcomponents/custom-elements/custom-elements.min.js"></script>
     <script src="node_modules/macgyvr/macgyvr-full-dev.js"></script>
 
-    <script src="src/components/aviz-samplers-list/aviz-samplers-list.js"></script>
-    <link href="src/components/aviz-samplers-list/aviz-samplers-list.css" rel="stylesheet" />
-
-    <script src="src/components/aviz-channels-list/aviz-channels-list.js"></script>
-    <link href="src/components/aviz-channels-list/aviz-channels-list.css" rel="stylesheet" />
+    <script src="src/components/aviz-playback-controls/aviz-playback-controls.js"></script>
+    <link href="src/components/aviz-playback-controls/aviz-playback-controls.css" rel="stylesheet" />
 
     <script src="src/components/aviz-nodes-list/aviz-nodes-list.js"></script>
     <link href="src/components/aviz-nodes-list/aviz-nodes-list.css" rel="stylesheet" />
@@ -21,23 +19,36 @@
 </head>
 <body>
 
-<!--<aviz-samplers-list></aviz-samplers-list>
-<aviz-channels-list></aviz-channels-list>-->
-<!--<aviz-nodes-list></aviz-nodes-list>-->
+<div class="app">
+    <div class="ui-container">
+        <div class="left-panel">
+            <aviz-playback-controls></aviz-playback-controls>
+            <aviz-nodes-list></aviz-nodes-list>
+        </div>
+        <aviz-timeline></aviz-timeline>
+    </div>
 
-<aviz-timeline></aviz-timeline>
+    <div class="canvas-container">
+        <canvas id="scene"></canvas>
+    </div>
+</div>
 
 <script>
     var loader = new BrowserESModuleLoader();
     loader.import('./src/app.js').then(function(App) {
-        var app = new App.default( {
-            components: {
-                timeline: document.querySelector('aviz-timeline'),
-                samplers: document.querySelector('aviz-samplers-list'),
-                channels: document.querySelector('aviz-channels-list'),
-                nodes: document.querySelector('aviz-nodes-list')
-            }
-        } );
+        var app = new App.default(
+            document.querySelector('#scene'), {
+                camera: { type: 'arcrotate', position: { x: 0, y: 0, z: -5 }},
+                scene: { useRightHandedSystem: true },
+                lights: 'default',
+                inspector: 'i',
+                components: {
+                    controls: document.querySelector('aviz-playback-controls'),
+                    timeline: document.querySelector('aviz-timeline'),
+                    nodes: document.querySelector('aviz-nodes-list'),
+                    scene: document.querySelector('canvas.scene'),
+                }
+            } );
     });
 </script>
 

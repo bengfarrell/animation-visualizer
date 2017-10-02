@@ -42,7 +42,13 @@ export default class GLTFAnimationParser extends EventListener {
         }
 
         this.parseAnimations();
-        this.triggerEvent(GLTFAnimationParser.LOADED, this.gltf);
+
+        let timelines = [];
+        for (let d = 0; d < this.gltf.animations.length; d++) {
+            timelines.push(this.createTimeline(this.gltf.animations[d]));
+        }
+
+        this.triggerEvent(GLTFAnimationParser.LOADED, { detail: { gltf: this.gltf, animations: timelines }});
     }
 
     parseAnimations() {
@@ -173,6 +179,51 @@ export default class GLTFAnimationParser extends EventListener {
         }
         return bufferViewData;
     };
+
+    createTimeline(animation) {
+        let tracks = {};
+        let startTime = -1;
+        let endTime = -1;
+        for (let c = 0; c < animation.channels.length; c++) {
+            if (!tracks[animation.channels[c].target._nodeRef.name]) {
+                tracks[animation.channels[c].target._nodeRef.name] = [];
+            }
+
+            let currentChannel = tracks[animation.channels[c].target._nodeRef.name];
+
+            for (let d = 0; d < animation.channels[c]._samplerRef._inputValues.length; d++) {
+                let time = animation.channels[c]._samplerRef._inputValues[d];
+                if (startTime === -1 || time < startTime) {
+                    startTime = time;
+                }
+                if (endTime === -1 || time > endTime) {
+                    endTime = time;
+                }
+
+                let keyframe;
+                for (let e = 0; e < currentChannel.length; e++) {
+                    if (currentChannel[e].time === time) {
+                        keyframe = currentChannel[e];
+                    }
+                }
+                if (!keyframe) {
+                    keyframe = { time: time, transform: {}, name: animation.channels[c].target._nodeRef.name };
+                    currentChannel.push(keyframe);
+                }
+
+                let transformType = animation.channels[c].target.path;
+                keyframe.transform[transformType] = animation.channels[c]._samplerRef._outputValues[d];
+
+            }
+        }
+
+        for (let track in tracks) {
+            tracks[track].sort(function(a, b) {
+                return a.time - b.time;
+            });
+        }
+        return { start: startTime, end: endTime, duration: endTime-startTime, tracks: tracks };
+    }
 
 }
 
