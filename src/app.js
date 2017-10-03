@@ -15,6 +15,10 @@ export default class Application extends BaseApplication {
         if (this.config.components.timeline) {
             this.config.components.timeline.currentTime = t;
         }
+
+        if (this.config.components.controls) {
+            this.config.components.controls.time = t;
+        }
     }
 
     get time() {
@@ -29,17 +33,26 @@ export default class Application extends BaseApplication {
         this.config.components.timeline.addEventListener(AnimationTimeline.SCRUB_TIMELINE, e => this.onScrubTimeline(e));
         this.config.components.timeline.addEventListener(AnimationTimeline.TRACK_VISIBILITY_CHANGED, e => this.onTrackVisibilityChanged(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.CONTROL_CLICKED, e => this.onPlaybackControlClicked(e));
+        this.config.components.controls.addEventListener(AnimationPlaybackControls.ANIMATION_SELECTED, e => this.onAnimationSelected(e));
         this.time = 0;
         this.playing = false;
         this.gltf = this.add( new GLTFObject() );
         this.gltf.time = this.time;
+        this.animations;
+        this.animationIndex = 0;
+    }
+
+    loadAnimation(index) {
+        this.config.components.timeline.data = this.animations[this.animationIndex];
+        this.gltf.duration = this.animations[this.animationIndex].duration;
+        this.config.components.controls.duration = this.animations[this.animationIndex].duration;
     }
 
     onGLTFData(event) {
-        this.currentAnimation = event.detail.animations[0];
-        this.config.components.timeline.data = this.currentAnimation;
+        this.animations = event.detail.animations;
+        this.config.components.controls.numOfAnimations = this.animations.length;
+        this.loadAnimation(this.animationIndex);
         this.config.components.nodes.data = event.detail.gltf.nodes;
-        this.gltf.duration = this.currentAnimation.duration;
     }
 
     onScrubTimeline(event) {
@@ -48,6 +61,10 @@ export default class Application extends BaseApplication {
         }
 
         this.time = event.detail.playbacktime;
+    }
+
+    onAnimationSelected(event) {
+        this.animationIndex = event.detail.animationIndex;
     }
 
     onTrackSelection(event) {

@@ -10,8 +10,35 @@ class AnimationPlaybackControls extends HTMLElement {
                                 <div class="playpause btn"></div>\
                                 <div class="step-forward btn"></div>\
                                 <div class="fast-forward btn"></div>\
+                            </div>\
+                            <div class="time-display">- / -</div>\
+                            <div class="animation-selector">\
+                                <select></select>\
                             </div>';
         this.dom = {};
+        this._duration = 0;
+    }
+
+    set numOfAnimations(val) {
+        this.dom.animationSelector.innerHTML = '';
+        for (let c = 0; c < val; c++) {
+            let opt = document.createElement('option');
+            opt.innerText = 'Animation ' + c + 1;
+            opt.value = c;
+            this.dom.animationSelector.appendChild(opt);
+        }
+    }
+
+    set time(value) {
+        if (this._duration === 0) {
+            return;
+        }
+        value = value % this._duration;
+        this.dom.timeDisplay.innerText = value.toFixed(3) + ' / ' + this._duration.toFixed(3);
+    }
+
+    set duration(value) {
+        this._duration = value;
     }
 
     connectedCallback() {
@@ -23,8 +50,16 @@ class AnimationPlaybackControls extends HTMLElement {
         this.dom.buttons.stepBackwardBtn = this.querySelector('.step-backward');
         this.dom.buttons.playpauseBtn = this.querySelector('.playpause');
         this.dom.buttonContainer = this.querySelector('.button-container');
+        this.dom.animationSelector = this.querySelector('.animation-selector select');
+        this.dom.timeDisplay = this.querySelector('.time-display');
         this.dom.buttonContainer.addEventListener('click', e => this.onButtonClick(e));
+        this.dom.animationSelector.addEventListener('change', e => this.onAnimationSelected(e));
         this.togglePlay(false);
+    }
+
+    onAnimationSelected(event) {
+        let e = new CustomEvent(AnimationPlaybackControls.ANIMATION_SELECTED, { 'detail': { animationIndex: event.currentTarget.value } });
+        this.dispatchEvent(e);
     }
 
     onButtonClick(event) {
@@ -85,6 +120,7 @@ class AnimationPlaybackControls extends HTMLElement {
 }
 
 AnimationPlaybackControls.CONTROL_CLICKED = 'onControlClicked';
+AnimationPlaybackControls.ANIMATION_SELECTED = 'onAnimationSelected';
 AnimationPlaybackControls.PLAY = 'play';
 AnimationPlaybackControls.PAUSE = 'pause';
 AnimationPlaybackControls.FAST_FORWARD = 'fastforward';

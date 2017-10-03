@@ -1,5 +1,42 @@
 aviz-playback-controls .button-container {
-    padding: 8px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline-block;
+}
+
+aviz-playback-controls .time-display {
+    color: whitesmoke;
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+    padding-bottom: 16px;
+    vertical-align: bottom;
+}
+
+aviz-playback-controls .animation-selector {
+    display: inline-block;
+    border: 1px solid #9f9f9f;
+    width: 120px;
+    height: 32px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #466c78 url("../../../assets/caret-down.png") no-repeat 90% 50%;
+    background-size: 10%;
+}
+
+aviz-playback-controls .animation-selector select {
+    padding: 9px 8px;
+    color: whitesmoke;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+aviz-playback-controls .animation-selector select:focus {
+    outline: none;
 }
 
 aviz-playback-controls .btn {
