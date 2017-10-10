@@ -17,10 +17,14 @@ class AnimationPlaybackControls extends HTMLElement {
                             </div>\
                             <div class="load-button">\
                                 <div>Load glTF...</div>\
-                                <input type="file" class="file-input" id="files" name="files[]" multiple />\
+                                <input type="file" class="file-input" id="files" name="files[]" accept=".gltf, .bin, .png, .jpg, .jpeg, .gif" multiple />\
                             </div>';
         this.dom = {};
         this._duration = 0;
+
+        document.body.addEventListener('drop', e => this.onFileDropped(e), false);
+        //document.body.addEventListener("dragover", e => this.onFileHover(e), false);
+        //document.body.addEventListener("dragleave", e => this.onFileHover(e), false);
     }
 
     set numOfAnimations(val) {
@@ -62,6 +66,21 @@ class AnimationPlaybackControls extends HTMLElement {
         this.dom.animationSelector.addEventListener('change', e => this.onAnimationSelected(e));
         this.dom.fileInput.addEventListener('change', e => this.onFileInputChange(e));
         this.togglePlay(false);
+    }
+
+    onFileDropped(event) {
+        if (!event.dataTransfer.files[0]) {
+            return;
+        }
+        let e = new CustomEvent(AnimationPlaybackControls.LOAD_GLTF, { 'detail': { files: event.dataTransfer.files, inputevent: event } });
+        this.dispatchEvent(e);
+        event.stopPropagation();
+        event.preventDefault();
+    }
+
+    onFileHover(event) {
+        event.stopPropagation();
+        event.preventDefault();
     }
 
     onAnimationSelected(event) {

@@ -86,6 +86,5 @@ export default class GLTFObject extends BaseGroup {
         }
     }
 
-    onRender(deltatime) {
-    }
+    onRender(deltatime) {}
 }
