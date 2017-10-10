@@ -1,6 +1,7 @@
 aviz-timeline {
     font-size: x-small;
     overflow: hidden;
+    user-select: none;
 }
 
 aviz-timeline .timeline .timeline-view {

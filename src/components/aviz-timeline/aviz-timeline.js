@@ -294,13 +294,13 @@ class AnimationTimeline extends HTMLElement {
             visible = true;
         }
 
-        let event = new CustomEvent(AnimationTimeline.TRACK_PLAYBACK_CHANGED, {
+        let e = new CustomEvent(AnimationTimeline.TRACK_PLAYBACK_CHANGED, {
             'detail': {
                 name: event.target.parentNode.parentNode.dataset.name,
                 visible: visible,
                 playbacktime: this.relativeTime / this.anim.duration
             }});
-        this.dispatchEvent(event);
+        this.dispatchEvent(e);
     }
 
     _onTrackHover(event) {

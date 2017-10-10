@@ -1,7 +1,44 @@
+aviz-playback-controls {
+    user-select: none;
+}
+
 aviz-playback-controls .button-container {
     padding-top: 5px;
     padding-bottom: 5px;
     display: inline-block;
+    position: relative;
+}
+
+aviz-playback-controls .load-button {
+    background: #466c78;
+    display: inline-block;
+    height: 32px;
+    border-radius: 5px;
+    border: 1px solid #9f9f9f;
+    color: whitesmoke;
+    float: right;
+    width: 105px;
+
+    position: relative;
+    overflow: hidden;
+    margin: 5px;
+}
+
+aviz-playback-controls .load-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+aviz-playback-controls .load-button div {
+    margin-top: 10px;
+    margin-left: 20px;
 }
 
 aviz-playback-controls .time-display {

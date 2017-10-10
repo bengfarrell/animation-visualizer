@@ -14,6 +14,10 @@ class AnimationPlaybackControls extends HTMLElement {
                             <div class="time-display">- / -</div>\
                             <div class="animation-selector">\
                                 <select></select>\
+                            </div>\
+                            <div class="load-button">\
+                                <div>Load glTF...</div>\
+                                <input type="file" class="file-input" id="files" name="files[]" multiple />\
                             </div>';
         this.dom = {};
         this._duration = 0;
@@ -51,14 +55,25 @@ class AnimationPlaybackControls extends HTMLElement {
         this.dom.buttons.playpauseBtn = this.querySelector('.playpause');
         this.dom.buttonContainer = this.querySelector('.button-container');
         this.dom.animationSelector = this.querySelector('.animation-selector select');
+        this.dom.loadGLTFButton = this.querySelector('.load-button');
         this.dom.timeDisplay = this.querySelector('.time-display');
+        this.dom.fileInput = this.querySelector('.file-input');
         this.dom.buttonContainer.addEventListener('click', e => this.onButtonClick(e));
         this.dom.animationSelector.addEventListener('change', e => this.onAnimationSelected(e));
+        this.dom.fileInput.addEventListener('change', e => this.onFileInputChange(e));
         this.togglePlay(false);
     }
 
     onAnimationSelected(event) {
         let e = new CustomEvent(AnimationPlaybackControls.ANIMATION_SELECTED, { 'detail': { animationIndex: event.currentTarget.value } });
+        this.dispatchEvent(e);
+    }
+
+    onFileInputChange(event) {
+        if (!event.target.files[0]) {
+            return;
+        }
+        let e = new CustomEvent(AnimationPlaybackControls.LOAD_GLTF, { 'detail': { files: event.target.files, inputevent: event } });
         this.dispatchEvent(e);
     }
 
@@ -120,6 +135,7 @@ class AnimationPlaybackControls extends HTMLElement {
 }
 
 AnimationPlaybackControls.CONTROL_CLICKED = 'onControlClicked';
+AnimationPlaybackControls.LOAD_GLTF = 'onLoadGLTF';
 AnimationPlaybackControls.ANIMATION_SELECTED = 'onAnimationSelected';
 AnimationPlaybackControls.PLAY = 'play';
 AnimationPlaybackControls.PAUSE = 'pause';
