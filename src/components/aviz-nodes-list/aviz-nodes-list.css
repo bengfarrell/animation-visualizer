@@ -28,9 +28,8 @@ aviz-nodes-list .breadcrumbs span.circle::before {
 }
 
 aviz-nodes-list ul {
-    width: calc(100% - 10px);
+    width: 100%;
     padding: 0;
-    padding-left: 10px;
     margin: 0;
     display: inline-block;
     overflow: scroll;
@@ -102,7 +101,7 @@ aviz-nodes-list li .transform .rotation {
 aviz-nodes-list li .transform .scale div.value,
 aviz-nodes-list li .transform .position div.value,
 aviz-nodes-list li .transform .rotation div.value {
-    width: 20px;
+    width: 25px;
     text-overflow: clip;
     overflow: hidden;
     white-space: nowrap;
