@@ -6,13 +6,31 @@ aviz-nodes-list {
 
 aviz-nodes-list .node-header,
 aviz-nodes-list .breadcrumbs {
-    padding: 5px;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    font-size: x-small;
+    font-weight: bold;
     background-color: #466c78;
 }
 
+aviz-nodes-list .node-header {
+    padding-top: 15px;
+}
+
+aviz-nodes-list .breadcrumbs {
+    cursor: pointer;
+}
+
+aviz-nodes-list .breadcrumbs span.circle::before {
+    content: "—";
+    margin-left: -5px;
+    font-weight: bold;
+}
+
 aviz-nodes-list ul {
-    width: 100%;
+    width: calc(100% - 10px);
     padding: 0;
+    padding-left: 10px;
     margin: 0;
     display: inline-block;
     overflow: scroll;
@@ -34,15 +52,13 @@ aviz-nodes-list .breadcrumbs span.circle {
     border-radius: 10px;
     width: 10px;
     height: 10px;
-    background-color: #ababab;
     margin-left: 5px;
-    margin-right: 5px;
+    background-color: whitesmoke;
     display: inline-block;
 }
 
 aviz-nodes-list li {
     list-style: none;
-    height: 100px;
     background-color: #202929;
 }
 
@@ -54,19 +70,26 @@ aviz-nodes-list li .transform {
 }
 
 aviz-nodes-list li .name {
-    padding-top: 8px;
-    padding-bottom: 8px;
-    padding-left: 5px;
-    font-weight: bold;
-    display: block;
+    font-size: x-small;
+    padding-top: 10px;
 }
 
-aviz-nodes-list a.expand {
+aviz-nodes-list li .expand {
+    cursor: pointer;
+    text-align: right;
+    padding-bottom: 5px;
+}
+
+aviz-nodes-list .expand a {
     font-weight: lighter;
     font-size: x-small;
     text-decoration: underline;
-    float: right;
-    padding-right: 5px;
+}
+
+aviz-nodes-list li p {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin: 0;
 }
 
 aviz-nodes-list li .transform .scale,
@@ -79,28 +102,38 @@ aviz-nodes-list li .transform .rotation {
 aviz-nodes-list li .transform .scale div.value,
 aviz-nodes-list li .transform .position div.value,
 aviz-nodes-list li .transform .rotation div.value {
-    width: 30px;
+    width: 20px;
     text-overflow: clip;
     overflow: hidden;
     white-space: nowrap;
     vertical-align: middle;
     text-align: right;
     display: inline-block;
-    padding-right: 10px;
     margin-right: 10px;
-
 }
 
 aviz-nodes-list li .transform .scale .transform-label,
 aviz-nodes-list li .transform .position .transform-label,
 aviz-nodes-list li .transform .rotation .transform-label {
-    background-color: darkslategrey;
-    border-color: whitesmoke;
+    border-color: black;
     border-style: solid;
     border-width: 1px;
     width: 7px;
     padding: 2px;
-    padding-left: 4px;
+    color: black;
+    padding-left: 3px;
     margin-right: 10px;
     display: inline-block;
+}
+
+aviz-nodes-list li .transform .position .transform-label {
+    background-color: #00ff01;
+}
+
+aviz-nodes-list li .transform .scale .transform-label {
+    background-color: #ffff01;
+}
+
+aviz-nodes-list li .transform .rotation .transform-label {
+    background-color: #ffa500;
 }

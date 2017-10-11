@@ -1,6 +1,14 @@
 aviz-nodes-list {
-    flex: 1;
-    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    width: 230px;
+    height: 100%;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
 }
 
 aviz-timeline {
@@ -22,6 +30,10 @@ aviz-playback-controls {
     flex: 1;
     overflow: hidden;
     display: flex;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
 }
 
 .center-panel {
@@ -29,15 +41,6 @@ aviz-playback-controls {
     display: flex;
     flex-direction: column;
     width: 100%;
-}
-
-.left-panel {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-
-    width: 200px;
-    height: 398px;
 }
 
 .canvas-container {

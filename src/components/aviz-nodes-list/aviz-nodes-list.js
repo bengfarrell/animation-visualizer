@@ -5,7 +5,7 @@ class AnimationNodes extends HTMLElement {
         super();
 
         // two ways to represent the node list (same nodes)
-        this._tree = { name: "root", index: -1, children: [] }
+        this._tree = { name: "Scene Root", index: -1, children: [] };
         this._list = [];
         this._breadcrumbTrail = [];
         this.template = '  <div class="node-header"></div>\
@@ -74,34 +74,49 @@ class AnimationNodes extends HTMLElement {
     }
 
     nodeTemplate(index, name, transform, numChildren) {
-        if (!transform.position) { transform.position = ['-', '-', '-']; }
-        if (!transform.scale) { transform.scale = ['-', '-', '-']; }
-        if (!transform.rotation) { transform.rotation = ['-', '-', '-', '-']; }
+        let tPos, tRot, tScale;
+        if (!transform.position) {
+            tPos = ['-', '-', '-'];
+        } else {
+            tPos = [transform.position[0].toFixed(2), transform.position[1].toFixed(2), transform.position[2].toFixed(2) ];
+        }
+
+        if (!transform.rotation) {
+            tRot = ['-', '-', '-'];
+        } else {
+            tRot = [transform.rotation[0].toFixed(2), transform.rotation[1].toFixed(2), transform.rotation[2].toFixed(2), transform.rotation[3].toFixed(2) ];
+        }
+
+        if (!transform.scale) {
+            tScale = ['-', '-', '-'];
+        } else {
+            tScale = [transform.scale[0].toFixed(2), transform.scale[1].toFixed(2), transform.scale[2].toFixed(2) ];
+        }
 
         let expand = '';
         if (numChildren === 1) {
-            expand = `<a class="expand" data-index="${index}"> + (${numChildren} child)</a>`;
+            expand = `<a data-index="${index}"> + (${numChildren} child)</a>`;
         } else if (numChildren > 1) {
-            expand = `<a class="expand" data-index="${index}"> + (${numChildren} children)</a>`
+            expand = `<a data-index="${index}"> + (${numChildren} children)</a>`
         }
 
-        return `<div class="name">${name} ${expand} </div>
+        return `<div><p class="name">${name}</p><p class="expand">${expand}</p></div>
                 <div class="transform">
                     <div class="position"><div class="transform-label">T</div>
-                        <div class="value">${transform.position[0]}</div> 
-                        <div class="value">${transform.position[1]}</div>
-                        <div class="value">${transform.position[2]}</div>
-                    </div>
-                    <div class="scale"><div class="transform-label">S</div> 
-                        <div class="value">${transform.scale[0]}</div>
-                        <div class="value">${transform.scale[1]}</div> 
-                        <div class="value">${transform.scale[2]}</div>
+                        <div class="value">${tPos[0]}</div> 
+                        <div class="value">${tPos[1]}</div>
+                        <div class="value">${tPos[2]}</div>
                     </div>
                     <div class="rotation"><div class="transform-label">R</div>
-                        <div class="value">${transform.rotation[0]}</div>
-                        <div class="value">${transform.rotation[1]}</div>
-                        <div class="value">${transform.rotation[2]}</div>
-                        <div class="value">${transform.rotation[3]}</div>
+                        <div class="value">${tRot[0]}</div>
+                        <div class="value">${tRot[1]}</div>
+                        <div class="value">${tRot[2]}</div>
+                        <div class="value">${tRot[3]}</div>
+                    </div>
+                    <div class="scale"><div class="transform-label">S</div> 
+                        <div class="value">${tScale[0]}</div>
+                        <div class="value">${tScale[1]}</div> 
+                        <div class="value">${tScale[2]}</div>
                     </div>
                 </div>`;
     }
