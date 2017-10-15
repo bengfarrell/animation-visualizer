@@ -4,6 +4,11 @@
 // Only supports mashing the animation buffer pieces into the GLTF object for now
 export default {
     explode(gltf) {
+        for (let d = 0; d < gltf.nodes.length; d++) {
+            if (!gltf.nodes[d].name) {
+                gltf.nodes[d].name = 'Node ' + Number(d+1) + ' (unnamed)';
+            }
+        }
         for (let c = 0; c < gltf.animations.length; c++) {
             // wire sampler references within channels for easy access
             for (let d = 0; d < gltf.animations[c].channels.length; d++) {
