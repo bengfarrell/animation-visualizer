@@ -31,7 +31,7 @@ class AnimationPlaybackControls extends HTMLElement {
         this.dom.animationSelector.innerHTML = '';
         for (let c = 0; c < val; c++) {
             let opt = document.createElement('option');
-            opt.innerText = 'Animation ' + c + 1;
+            opt.innerText = 'Animation ' + Number(c + 1);
             opt.value = c;
             this.dom.animationSelector.appendChild(opt);
         }
