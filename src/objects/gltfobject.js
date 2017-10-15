@@ -16,7 +16,7 @@ export default class GLTFObject extends BaseGroup {
     load(value) {
         if (typeof value === 'string') {
             let uri = value;
-            let filename = uri.split('/')[uri.split(uri).length];
+            let filename = uri.split('/')[uri.split('/').length-1];
             let basepath = uri.substr(0, uri.indexOf(filename));
             let loader = new BABYLON.AssetsManager(this.scene);
             loader.useDefaultLoadingScreen = false;

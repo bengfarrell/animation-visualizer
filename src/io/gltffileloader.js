@@ -29,7 +29,7 @@ export default class GLTFFileLoader extends EventListener {
     }
 
     loadRemote(path) {
-        this._filename = path.split('/')[path.split(path).length];
+        this._filename = path.split('/')[path.split('/').length-1];
         this._basepath = path.substr(0, path.indexOf(this._filename));
         let loader = new XMLHttpRequest();
         loader.open('GET', path, true);

@@ -1,0 +1,2 @@
+[ { "name": "Golfer", "uri": "./examples/golfer/golfer.gltf" },
+  { "name": "Cesium Man", "uri": "./examples/cesiumman/CesiumMan.gltf" } ]
