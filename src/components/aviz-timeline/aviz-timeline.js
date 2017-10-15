@@ -2,6 +2,8 @@ class AnimationTimeline extends HTMLElement {
     static get observedAttributes() { return []}
 
     set data(animation) {
+        this.destroy();
+        
         this.anim = animation;
         this._populateDeltas(this.anim);
         this._drawTimelineLabel();
@@ -11,6 +13,10 @@ class AnimationTimeline extends HTMLElement {
   
         this.dom.playbackLine.style.height = this.dom.container.scrollHeight + 'px';
         this.currentTime = 0;
+    }
+
+    destroy() {
+        this.dom.container.innerHTML = '';
     }
 
     set currentTime(seconds) {
@@ -124,11 +130,11 @@ class AnimationTimeline extends HTMLElement {
         let tracklabel = document.createElement('DIV');
         tracklabel.classList.add('track-label');
 
-        let trackVisibilityToggle = document.createElement('div');
+        /*let trackVisibilityToggle = document.createElement('div');
         trackVisibilityToggle.classList.add('icon-eye');
         trackVisibilityToggle.classList.add('on');
         trackVisibilityToggle.addEventListener('click', e => this._onTrackVisibilityClick(e));
-        tracklabel.appendChild(trackVisibilityToggle);
+        tracklabel.appendChild(trackVisibilityToggle);*/
 
         let trackName = document.createElement('span');
         trackName.innerText = name;

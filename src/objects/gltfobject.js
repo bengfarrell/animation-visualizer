@@ -32,7 +32,7 @@ export default class GLTFObject extends BaseGroup {
     onMeshesLoaded(asset) {
         this.add(asset.loadedMeshes);
         this.group.rotation.x = Math.PI/2;
-        this.prepareScene(scene);
+        this.prepareScene(this.scene);
     }
 
     onSceneLoaded(scenefile, scene) {
@@ -41,18 +41,30 @@ export default class GLTFObject extends BaseGroup {
     }
 
     prepareScene(scene) {
-        if (scene.activeCamera === undefined) {
-            this.application.addCamera( this.appConfig.camera.type, this.appConfig.camera.position );
+        // remove camera from scene to add our own
+        if (scene.activeCamera) {
+            scene.activeCamera.dispose();
+            scene.activeCamera = null;
         }
+
+        scene.createDefaultCameraOrLight(true);
+        scene.activeCamera.attachControl(this.canvas);
 
         if (scene.lights.length === 0) {
             this.application.addLights();
         }
 
-        // pause all to start
-        for (let c = 0; c < scene.Animatables.length; c++) {
-            scene.Animatables[c].pause();
-        }
+        // pause all to start - if synchronous, the scene doesn't seem to show up
+        setTimeout( function() {
+            for (let c = 0; c < scene.Animatables.length; c++) {
+                scene.Animatables[c].goToFrame(0);
+                scene.Animatables[c].pause();
+            }
+        }, 50);
+
+        let worldExtends = scene.getWorldExtends();
+        let sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, worldExtends.max.y, (worldExtends.max.z + worldExtends.min.z)/2);
+        scene.activeCamera.setTarget( sceneMidPoint );
     }
 
     set duration(dur) {

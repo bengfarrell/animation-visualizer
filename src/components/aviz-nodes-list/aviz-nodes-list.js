@@ -122,6 +122,7 @@ class AnimationNodes extends HTMLElement {
     }
 
     set data(nodes) {
+        this.destroy();
         this._list = [];
         for (let c = 0; c < nodes.length; c++) {
 
@@ -164,6 +165,13 @@ class AnimationNodes extends HTMLElement {
         }
 
         this.renderNode(this._tree);
+    }
+
+
+    destroy() {
+        this._tree = { name: "Scene Root", index: -1, children: [] };
+        this.dom.list.innerHTML = '';
+        this.dom.breadcrumbs.innerHTML = '';
     }
 
     onBreadcrumbClicked(e) {

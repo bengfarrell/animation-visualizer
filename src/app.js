@@ -26,23 +26,16 @@ export default class Application extends BaseApplication {
     }
 
     onCreate(scene) {
-        /*let loader = new GLTFFileLoader();
-        loader.addListener(GLTFFileLoader.LOADED, (eventtype, event) => this.onGLTFData(event));
-        loader.loadRemote('./examples/golfer.gltf');*/
-
         this.config.components.timeline.addEventListener(AnimationTimeline.TRACK_SELECTED, e => this.onTrackSelection(e));
         this.config.components.timeline.addEventListener(AnimationTimeline.SCRUB_TIMELINE, e => this.onScrubTimeline(e));
         this.config.components.timeline.addEventListener(AnimationTimeline.TRACK_VISIBILITY_CHANGED, e => this.onTrackVisibilityChanged(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.CONTROL_CLICKED, e => this.onPlaybackControlClicked(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.ANIMATION_SELECTED, e => this.onAnimationSelected(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.LOAD_GLTF, e => this.loadFile(e));
+        this.config.components.samples.addEventListener(AnimationSampleGLTFs.SELECT_REMOTE_FILE, e => this.loadFile(e));
         this.time = 0;
         this.playing = false;
         this.gltf = this.add( new GLTFObject() );
-
-        //let obj = new GLTFObject();
-        //this.gltf = this.add( obj );
-        //obj.load('./examples/golfer.gltf');
         this.animations;
         this.animationIndex = 0;
     }
@@ -54,15 +47,22 @@ export default class Application extends BaseApplication {
     }
 
     loadFile(event) {
+        this.config.components.samples.style.display = 'none';
+
         let loader = new GLTFFileLoader();
         loader.addListener(GLTFFileLoader.LOADED, (eventtype, event) => this.onGLTFData(event));
-        loader.loadLocal(event.detail.files);
+        if (typeof event === 'string') {
+            let uri = event;
+            loader.loadRemote(uri);
+            this.gltf.load(uri);
+        } else if (event.detail.uri) {
+            loader.loadRemote(event.detail.uri);
+            this.gltf.load(event.detail.uri);
+        } else {
+            loader.loadLocal(event.detail.files);
+            this.gltf.load(event.detail.inputevent);
+        }
 
-        //let obj = new GLTFObject();
-        //this.gltf = this.add( new GLTFObject() );
-        //obj.load(event.detail.files[0].name);
-
-        this.gltf.load(event.detail.inputevent);
         this.gltf.time = this.time;
     }
 

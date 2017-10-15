@@ -17,7 +17,10 @@
     <script src="src/components/aviz-timeline/aviz-timeline.js"></script>
     <link href="src/components/aviz-timeline/aviz-timeline.css" rel="stylesheet" />
 
-    <link href="src/global.css" rel="stylesheet" />
+    <script src="src/components/aviz-sample-gltfs/aviz-sample-gltfs.js"></script>
+    <link href="src/components/aviz-sample-gltfs/aviz-sample-gltfs.css" rel="stylesheet" />
+
+    <link href="src/main.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -32,6 +35,7 @@
 
     <div class="canvas-container">
         <canvas id="scene"></canvas>
+        <aviz-sample-gltfs manifest="samples.json"></aviz-sample-gltfs>
     </div>
 </div>
 
@@ -40,15 +44,15 @@
     loader.import('./src/app.js').then(function(App) {
         var app = new App.default(
             document.querySelector('#scene'), {
-                camera: { type: 'arcrotate', position: { x: 0, y: 0, z: -5 }},
                 scene: { useRightHandedSystem: true },
-                lights: 'default',
+                lights: 'arcrotate',
                 inspector: 'i',
                 components: {
                     controls: document.querySelector('aviz-playback-controls'),
                     timeline: document.querySelector('aviz-timeline'),
                     nodes: document.querySelector('aviz-nodes-list'),
                     scene: document.querySelector('canvas.scene'),
+                    samples: document.querySelector('aviz-sample-gltfs')
                 }
             } );
     });
