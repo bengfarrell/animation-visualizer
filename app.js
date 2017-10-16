@@ -1344,7 +1344,6 @@ var GLTFObject = function (_BaseGroup) {
                 this.application.addLights();
             }
 
-            console.log(scene.lights);
             // pause all to start - if synchronous, the scene doesn't seem to show up
             setTimeout(function () {
                 for (var c = 0; c < scene.Animatables.length; c++) {

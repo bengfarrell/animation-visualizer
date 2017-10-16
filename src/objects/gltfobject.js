@@ -64,7 +64,6 @@ export default class GLTFObject extends BaseGroup {
             this.application.addLights();
         }
 
-        console.log(scene.lights)
         // pause all to start - if synchronous, the scene doesn't seem to show up
         setTimeout( function() {
             for (let c = 0; c < scene.Animatables.length; c++) {
