@@ -4,7 +4,9 @@ class AnimationSampleGLTFs extends HTMLElement {
     constructor() {
         super();
         this.template = '<h3>Sample glTF files</h3>\
-                         <div class="container"></div>';
+                         <div class="container"></div>\
+                         <p>Alternately, drag & drop or load your glTF files. Sorry, .glb files are not supported at this time</p>\
+                         <p>When loading, please drag/drop/multiselect all files simultaneously (gltf, bin, images)</p>';
         this.dom = {};
     }
 

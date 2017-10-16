@@ -1,8 +1,9 @@
 {
   "name": "animation-visualizer",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "dependencies": {
-    "@webcomponents/custom-elements": "^1.0.4"
+    "@webcomponents/custom-elements": "^1.0.4",
+    "macgyvr": "^0.2.0"
   },
   "devDependencies": {
     "async": "^1.5.2",

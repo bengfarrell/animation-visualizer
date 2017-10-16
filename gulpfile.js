@@ -61,3 +61,15 @@ gulp.task('default', function() {
     runSequence( ['app', 'dependencies', 'css']);
 });
 
+gulp.task('ghpages', function() {
+    return gulp.src([
+        './examples/**',
+        './assets/**',
+        './build.css',
+        './index.html',
+        './samples.json',
+        './app.js',
+        './app.js.map',
+        './libs.js'], {base: "."})
+        .pipe(ghPages());
+});
