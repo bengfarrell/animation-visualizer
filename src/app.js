@@ -30,20 +30,11 @@ export default class Application extends BaseApplication {
         this.config.components.timeline.addEventListener(AnimationTimeline.SCRUB_TIMELINE, e => this.onScrubTimeline(e));
         this.config.components.timeline.addEventListener(AnimationTimeline.TRACK_VISIBILITY_CHANGED, e => this.onTrackVisibilityChanged(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.CONTROL_CLICKED, e => this.onPlaybackControlClicked(e));
-        this.config.components.controls.addEventListener(AnimationPlaybackControls.ANIMATION_SELECTED, e => this.onAnimationSelected(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.LOAD_GLTF, e => this.loadFile(e));
         this.config.components.samples.addEventListener(AnimationSampleGLTFs.SELECT_REMOTE_FILE, e => this.loadFile(e));
         this.time = 0;
         this.playing = false;
         this.gltf = this.add( new GLTFObject() );
-        this.animations;
-        this.animationIndex = 0;
-    }
-
-    loadAnimation(index) {
-        this.config.components.timeline.data = this.animations[index];
-        this.gltf.duration = this.animations[index].duration;
-        this.config.components.controls.duration = this.animations[index].duration;
     }
 
     loadFile(event) {
@@ -67,13 +58,10 @@ export default class Application extends BaseApplication {
     }
 
     onGLTFData(event) {
-        this.animations = event.gltf.animations;
-        for (let c = 0; c < this.animations.length; c++) {
-            this.animations[c] = GLTFExploder.generateTimeline(this.animations[c]);
-        }
-
-        this.config.components.controls.numOfAnimations = this.animations.length;
-        this.loadAnimation(this.animationIndex);
+        let timeline = GLTFExploder.generateTimeline(event.gltf.animations);
+        this.config.components.timeline.data = timeline;
+        this.gltf.duration = timeline.duration;
+        this.config.components.controls.duration = timeline.duration;
         this.config.components.nodes.data = event.gltf.nodes;
     }
 
@@ -83,10 +71,6 @@ export default class Application extends BaseApplication {
         }
 
         this.time = event.detail.playbacktime;
-    }
-
-    onAnimationSelected(event) {
-        this.animationIndex = event.detail.animationIndex;
     }
 
     onTrackSelection(event) {

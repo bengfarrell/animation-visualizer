@@ -30,6 +30,9 @@ class AnimationSampleGLTFs extends HTMLElement {
     }
 
     onFileClicked(event) {
+        if (!event.target.parentNode.dataset.uri) {
+            return;
+        }
         let e = new CustomEvent(AnimationSampleGLTFs.SELECT_REMOTE_FILE, { 'detail': { uri: event.target.parentNode.dataset.uri } });
         this.dispatchEvent(e);
     }

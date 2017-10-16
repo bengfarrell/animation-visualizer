@@ -31,7 +31,7 @@ export default class GLTFObject extends BaseGroup {
 
     onMeshesLoaded(asset) {
         this.add(asset.loadedMeshes);
-        this.group.rotation.x = Math.PI/2;
+        this.group.rotation.x = -Math.PI/2;
         this.prepareScene(this.scene);
     }
 

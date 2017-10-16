@@ -4,9 +4,9 @@
 // Only supports mashing the animation buffer pieces into the GLTF object for now
 export default {
     explode(gltf) {
-        for (let d = 0; d < gltf.nodes.length; d++) {
-            if (!gltf.nodes[d].name) {
-                gltf.nodes[d].name = 'Node ' + Number(d+1) + ' (unnamed)';
+        for (let f = 0; f < gltf.nodes.length; f++) {
+            if (!gltf.nodes[f].name) {
+                gltf.nodes[f].name = 'Node ' + Number(f+1) + ' (unnamed)';
             }
         }
         for (let c = 0; c < gltf.animations.length; c++) {
@@ -43,32 +43,36 @@ export default {
         // map bufferView to actual mem ref
         samplerData._bufferViewRef = bufferView;
 
+        let byteOffset = bufferView.byteOffset;
+        if (samplerData.byteOffset) {
+            byteOffset += samplerData.byteOffset;
+        }
         let byteLength = samplerData.count * this._getByteStrideFromType(samplerData);
-        let inputValues = this._parseBufferData(buffer, bufferView.byteOffset, byteLength, samplerData.componentType);
+        let values = this._parseBufferData(buffer, byteOffset, byteLength, samplerData.componentType);
 
         if (type === 'keyframes') {
-            return inputValues;
+            return values;
         } else {
             let counter = 0;
             let transforms = [];
             let vec;
 
-            for (let c = 0; c < inputValues.length; c++) {
+            for (let c = 0; c < values.length; c++) {
                 switch (counter) {
                     case 0:
                         transforms.push({});
                         vec = transforms[transforms.length-1];
-                        vec.x = inputValues[c];
+                        vec.x = values[c];
                         counter ++;
                         break;
 
                     case 1:
-                        vec.y = inputValues[c];
+                        vec.y = values[c];
                         counter ++;
                         break;
 
                     case 2:
-                        vec.z = inputValues[c];
+                        vec.z = values[c];
 
                         counter ++;
                         if (type !== 'rotation') {
@@ -77,7 +81,7 @@ export default {
                         break;
 
                     case 3:
-                        vec.w = inputValues[c];
+                        vec.w = values[c];
                         counter = 0;
                         break;
                 }
@@ -136,7 +140,28 @@ export default {
         return bufferViewData;
     },
 
-    generateTimeline(animation) {
+    generateTimeline(gltfAnims) {
+        let start;
+        let end;
+        let timeline = { animations: [] };
+        for (let c = 0; c < gltfAnims.length; c++) {
+            let tracks = this._generateTracksForAnimation(gltfAnims[c]);
+            if (!start || start > tracks.start) {
+                start = tracks.start;
+            }
+            if (!end || end < tracks.end) {
+                end = tracks.end;
+            }
+            timeline.animations.push({ animation: tracks });
+        }
+
+        timeline.start = start;
+        timeline.end = end;
+        timeline.duration = end - start;
+        return timeline;
+    },
+
+    _generateTracksForAnimation(animation) {
         let tracks = {};
         let startTime = -1;
         let endTime = -1;
@@ -169,15 +194,9 @@ export default {
 
                 let transformType = animation.channels[c].target.path;
                 keyframe.transform[transformType] = animation.channels[c]._samplerRef._outputValues[d];
-
             }
         }
 
-        for (let track in tracks) {
-            tracks[track].sort(function(a, b) {
-                return a.time - b.time;
-            });
-        }
         return { start: startTime, end: endTime, duration: endTime-startTime, tracks: tracks };
     },
 

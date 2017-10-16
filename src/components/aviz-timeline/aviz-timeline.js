@@ -1,18 +1,21 @@
 class AnimationTimeline extends HTMLElement {
     static get observedAttributes() { return []}
 
-    set data(animation) {
+    set data(timeline) {
         this.destroy();
-        
-        this.anim = animation;
-        this._populateDeltas(this.anim);
+
+        this.timeline = timeline;
+        this._populateDeltas(this.timeline);
         this._drawTimelineLabel();
-        for (let track in this.anim.tracks) {
-            this._createTrack(track, this.anim.tracks[track]);
+        for (let c = 0; c < this.timeline.animations.length; c++) {
+            for (let track in this.timeline.animations[c].animation.tracks) {
+                this._createTrack(c, track, this.timeline.animations[c].animation.tracks[track]);
+            }
         }
   
         this.dom.playbackLine.style.height = this.dom.container.scrollHeight + 'px';
         this.currentTime = 0;
+        this._onTimelineScroll();
     }
 
     destroy() {
@@ -20,8 +23,8 @@ class AnimationTimeline extends HTMLElement {
     }
 
     set currentTime(seconds) {
-        if (this.anim && !this._draggingPlayhead) {
-            this.relativeTime = seconds % this.anim.duration;
+        if (this.timeline && !this._draggingPlayhead) {
+            this.relativeTime = seconds % this.timeline.duration;
             this.dom.playbackLine.style.left = this.relativeTime * this.pixelsPerSecond + 'px';
             this.dom.playbackHead.style.left = this.relativeTime * this.pixelsPerSecond - 7 + 'px';
         }
@@ -120,9 +123,10 @@ class AnimationTimeline extends HTMLElement {
         this.dom.axislabel.addEventListener('mousemove', e => this._onLabelTrackMouseMove(e));
     }
 
-    _createTrack(name, data) {
+    _createTrack(animationIndex, name, data) {
         let trackcontainer = document.createElement('DIV');
         trackcontainer.dataset.name = name;
+        trackcontainer.dataset.animation = animationIndex;
         trackcontainer.addEventListener('click', e => this._onTrackClick(e));
         trackcontainer.addEventListener('mousemove', e => this._onTrackHover(e));
         trackcontainer.className = 'timeline-track';
@@ -139,16 +143,16 @@ class AnimationTimeline extends HTMLElement {
         let trackName = document.createElement('span');
         trackName.innerText = name;
         tracklabel.appendChild(trackName);
-        this.dom['track-' + name] = canvas;
-        this._drawTrack(name, data);
+        this.dom['animation-' + animationIndex + '-track-' + name] = canvas;
+        this._drawTrack(animationIndex, name, data);
         trackcontainer.appendChild(tracklabel);
         trackcontainer.appendChild(canvas);
         this.dom.container.appendChild(trackcontainer);
     }
 
-    _drawTrack(name, data) {
-        let canvas = this.dom['track-' + name];
-        canvas.width = this.anim.duration * this.pixelsPerSecond + this.keyframeSize.width;
+    _drawTrack(animationIndex, name, data) {
+        let canvas = this.dom['animation-' + animationIndex + '-track-' + name];
+        canvas.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
         canvas.height = 16;
         let ctx = canvas.getContext('2d');
         for (let c = 0; c < data.length; c++) {
@@ -181,13 +185,13 @@ class AnimationTimeline extends HTMLElement {
 
     _drawTimelineLabel() {
         let canvas = this.dom.timelineZoomLabel;
-        canvas.width = this.anim.duration * this.pixelsPerSecond + this.keyframeSize.width;
+        canvas.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
         canvas.height = 15;
         let ctx = canvas.getContext('2d');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = 'white';
 
-        for (let c = this.ticks; c < this.anim.duration; c += this.ticks) {
+        for (let c = this.ticks; c < this.timeline.duration; c += this.ticks) {
             let tHeight = 8;
             let tWidth = 1;
             if (Math.abs(Number(Math.round(c +'e2')+'e-2') === Math.round(c))) { // just trying to test if an integer, stupid precision loss
@@ -198,53 +202,55 @@ class AnimationTimeline extends HTMLElement {
         }
     }
 
-    _populateDeltas(anim) {
-        for (let track in this.anim.tracks) {
-            if (!this.deltaRanges[track]) {
-                this.deltaRanges[track] = {};
+    _populateDeltas(timeline) {
+        for (let d = 0; d < timeline.animations.length; d++) {
+            for (let track in timeline.animations[d].animation.tracks) {
+                if (!this.deltaRanges[track]) {
+                    this.deltaRanges[track] = {};
+                }
+
+                for (let c = 1; c < timeline.animations[d].animation.tracks[track].length; c++) {
+                    let t1 = timeline.animations[d].animation.tracks[track][c].transform;
+                    let t0 = timeline.animations[d].animation.tracks[track][c-1].transform;
+                    let dPos = Math.sqrt(Math.pow(t1.translation.x - t0.translation.x, 2) + Math.pow(t1.translation.y - t0.translation.y, 2) + Math.pow(t1.translation.z - t0.translation.z, 2));
+                    let dRot = Math.sqrt(Math.pow(t1.rotation.x - t0.rotation.x, 2) + Math.pow(t1.rotation.y - t0.rotation.y, 2) + Math.pow(t1.rotation.z - t0.rotation.z, 2));
+                    let dScale = Math.sqrt(Math.pow(t1.scale.x - t0.scale.x, 2) + Math.pow(t1.scale.y - t0.scale.y, 2) + Math.pow(t1.scale.z - t0.scale.z, 2));
+                    timeline.animations[d].animation.tracks[track][c].transform.deltas = { position: dPos, rotation: dRot, scaling: dScale };
+
+                    if (!this.deltaRanges[track].rotation) {
+                        this.deltaRanges[track].rotation = {};
+                        this.deltaRanges[track].rotation.min = 0;
+                        this.deltaRanges[track].rotation.max = dRot;
+                    } else {
+                        if (this.deltaRanges[track].rotation.min > dRot) { this.deltaRanges[track].rotation.min = dRot; }
+                        if (this.deltaRanges[track].rotation.max < dRot) { this.deltaRanges[track].rotation.max = dRot; }
+                    }
+
+                    if (!this.deltaRanges[track].position) {
+                        this.deltaRanges[track].position = {};
+                        this.deltaRanges[track].position.min = 0;
+                        this.deltaRanges[track].position.max = dPos;
+                    } else {
+                        if (this.deltaRanges[track].position.min > dPos) { this.deltaRanges[track].position.min = dPos; }
+                        if (this.deltaRanges[track].position.max < dPos) { this.deltaRanges[track].position.max = dPos; }
+                    }
+
+                    if (!this.deltaRanges[track].scaling) {
+                        this.deltaRanges[track].scaling = {};
+                        this.deltaRanges[track].scaling.min = 0;
+                        this.deltaRanges[track].scaling.max = dScale;
+                    } else {
+                        if (this.deltaRanges[track].scaling.min > dScale) { this.deltaRanges[track].scaling.min = dScale; }
+                        if (this.deltaRanges[track].scaling.max < dScale) { this.deltaRanges[track].scaling.max = dScale; }
+                    }
+                }
+                // first track has no delta, so give it maximum delta
+                timeline.animations[d].animation.tracks[track][0].transform.deltas = {
+                    position: this.deltaRanges[track].position.max,
+                    rotation: this.deltaRanges[track].rotation.max,
+                    scaling: this.deltaRanges[track].scaling.max
+                };
             }
-
-            for (let c = 1; c < this.anim.tracks[track].length; c++) {
-                let t1 = this.anim.tracks[track][c].transform;
-                let t0 = this.anim.tracks[track][c-1].transform;
-                let dPos = Math.sqrt(Math.pow(t1.translation.x - t0.translation.x, 2) + Math.pow(t1.translation.y - t0.translation.y, 2) + Math.pow(t1.translation.z - t0.translation.z, 2));
-                let dRot = Math.sqrt(Math.pow(t1.rotation.x - t0.rotation.x, 2) + Math.pow(t1.rotation.y - t0.rotation.y, 2) + Math.pow(t1.rotation.z - t0.rotation.z, 2));
-                let dScale = Math.sqrt(Math.pow(t1.scale.x - t0.scale.x, 2) + Math.pow(t1.scale.y - t0.scale.y, 2) + Math.pow(t1.scale.z - t0.scale.z, 2));
-                this.anim.tracks[track][c].transform.deltas = { position: dPos, rotation: dRot, scaling: dScale };
-
-                if (!this.deltaRanges[track].rotation) {
-                    this.deltaRanges[track].rotation = {};
-                    this.deltaRanges[track].rotation.min = dRot;
-                    this.deltaRanges[track].rotation.max = dRot;
-                } else {
-                    if (this.deltaRanges[track].rotation.min > dRot) { this.deltaRanges[track].rotation.min = dRot; }
-                    if (this.deltaRanges[track].rotation.max < dRot) { this.deltaRanges[track].rotation.max = dRot; }
-                }
-
-                if (!this.deltaRanges[track].position) {
-                    this.deltaRanges[track].position = {};
-                    this.deltaRanges[track].position.min = dPos;
-                    this.deltaRanges[track].position.max = dPos;
-                } else {
-                    if (this.deltaRanges[track].position.min > dPos) { this.deltaRanges[track].position.min = dPos; }
-                    if (this.deltaRanges[track].position.max < dPos) { this.deltaRanges[track].position.max = dPos; }
-                }
-
-                if (!this.deltaRanges[track].scaling) {
-                    this.deltaRanges[track].scaling = {};
-                    this.deltaRanges[track].scaling.min = dScale;
-                    this.deltaRanges[track].scaling.max = dScale;
-                } else {
-                    if (this.deltaRanges[track].scaling.min > dScale) { this.deltaRanges[track].scaling.min = dScale; }
-                    if (this.deltaRanges[track].scaling.max < dScale) { this.deltaRanges[track].scaling.max = dScale; }
-                }
-            }
-            // first track has no delta, so give it maximum delta
-            this.anim.tracks[track][0].transform.deltas = {
-                position: this.deltaRanges[track].position.max,
-                rotation: this.deltaRanges[track].rotation.max,
-                scaling: this.deltaRanges[track].scaling.max
-            };
         }
     }
 
@@ -258,15 +264,18 @@ class AnimationTimeline extends HTMLElement {
 
         let tracks = this.querySelectorAll('.timeline-track');
         for (let c = 0; c < tracks.length; c++) {
-            tracks[c].style.width = this.anim.duration * this.pixelsPerSecond + this.keyframeSize.width + 'px';
+            tracks[c].style.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width + 5 + 'px';
         }
     }
 
     _onZoom(event) {
         this.pixelsPerSecond = event.target.value;
         this._drawTimelineLabel();
-        for (let track in this.anim.tracks) {
-            this._drawTrack(track, this.anim.tracks[track]);
+
+        for (let c = 0; c < this.timeline.animations.length; c++) {
+            for (let track in this.timeline.animations[c].animation.tracks) {
+                this._drawTrack(c, track, this.timeline.animations[c].animation.tracks[track]);
+            }
         }
         this._onTimelineScroll(); // need track resizing
     }
@@ -304,14 +313,14 @@ class AnimationTimeline extends HTMLElement {
             'detail': {
                 name: event.target.parentNode.parentNode.dataset.name,
                 visible: visible,
-                playbacktime: this.relativeTime / this.anim.duration
+                playbacktime: this.relativeTime / this.timeline.duration
             }});
         this.dispatchEvent(e);
     }
 
     _onTrackHover(event) {
         let time = (event.offsetX - this.keyframeSize.width) / this.pixelsPerSecond;
-        let track = this.anim.tracks[event.currentTarget.dataset.name];
+        let track = this.timeline.animations[parseInt(event.currentTarget.dataset.animation)].animation.tracks[event.currentTarget.dataset.name];
         let timeIndex;
         for (let c = 0; c < track.length; c++) {
             if (track[c].time >= time) {
@@ -377,7 +386,7 @@ class AnimationTimeline extends HTMLElement {
             'detail': {
                 resumeplayback: endscrub,
                 playbacktime: posX / this.pixelsPerSecond,
-                playbackratio: (posX / this.pixelsPerSecond) / this.anim.duration
+                playbackratio: (posX / this.pixelsPerSecond) / this.timeline.duration
             }});
         this.dispatchEvent(e);
     }

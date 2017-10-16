@@ -44,7 +44,7 @@
     loader.import('./src/app.js').then(function(App) {
         var app = new App.default(
             document.querySelector('#scene'), {
-                scene: { useRightHandedSystem: true },
+                scene: { useRightHandedSystem: false },
                 lights: 'arcrotate',
                 inspector: 'i',
                 components: {
