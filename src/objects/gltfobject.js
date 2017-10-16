@@ -64,6 +64,7 @@ export default class GLTFObject extends BaseGroup {
             this.application.addLights();
         }
 
+        console.log(scene.lights)
         // pause all to start - if synchronous, the scene doesn't seem to show up
         setTimeout( function() {
             for (let c = 0; c < scene.Animatables.length; c++) {
@@ -75,9 +76,9 @@ export default class GLTFObject extends BaseGroup {
         let worldExtends = scene.getWorldExtends();
         let sceneMidPoint;
         if (this._useRightHandedCoordinates) {
-            sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, worldExtends.max.y, (worldExtends.max.z + worldExtends.min.z)/2);
-        } else {
             sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, (worldExtends.max.y + worldExtends.min.y)/2, (worldExtends.max.z + worldExtends.min.z)/2);
+        } else {
+            let sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, (worldExtends.max.y + worldExtends.min.y)/2, (worldExtends.max.z + worldExtends.min.z)/2);
         }
         scene.activeCamera.setTarget( sceneMidPoint );
     }

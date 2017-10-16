@@ -20,7 +20,7 @@ class AnimationPlaybackControls extends HTMLElement {
         this._duration = 0;
 
         document.body.addEventListener('drop', e => this.onFileDropped(e), false);
-        //document.body.addEventListener("dragover", e => this.onFileHover(e), false);
+        document.body.addEventListener("dragover", e => this.onFileHover(e), false);
         //document.body.addEventListener("dragleave", e => this.onFileHover(e), false);
     }
 
@@ -57,13 +57,13 @@ class AnimationPlaybackControls extends HTMLElement {
     }
 
     onFileDropped(event) {
+        event.stopPropagation();
+        event.preventDefault();
         if (!event.dataTransfer.files[0]) {
             return;
         }
         let e = new CustomEvent(AnimationPlaybackControls.LOAD_GLTF, { 'detail': { files: event.dataTransfer.files, inputevent: event } });
         this.dispatchEvent(e);
-        event.stopPropagation();
-        event.preventDefault();
     }
 
     onFileHover(event) {
