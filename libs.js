@@ -324,7 +324,7 @@ class AnimationPlaybackControls extends HTMLElement {
         this._duration = 0;
 
         document.body.addEventListener('drop', e => this.onFileDropped(e), false);
-        //document.body.addEventListener("dragover", e => this.onFileHover(e), false);
+        document.body.addEventListener("dragover", e => this.onFileHover(e), false);
         //document.body.addEventListener("dragleave", e => this.onFileHover(e), false);
     }
 
@@ -361,13 +361,13 @@ class AnimationPlaybackControls extends HTMLElement {
     }
 
     onFileDropped(event) {
+        event.stopPropagation();
+        event.preventDefault();
         if (!event.dataTransfer.files[0]) {
             return;
         }
         let e = new CustomEvent(AnimationPlaybackControls.LOAD_GLTF, { 'detail': { files: event.dataTransfer.files, inputevent: event } });
         this.dispatchEvent(e);
-        event.stopPropagation();
-        event.preventDefault();
     }
 
     onFileHover(event) {
@@ -459,7 +459,7 @@ class AnimationSampleGLTFs extends HTMLElement {
         super();
         this.template = '<h3>Sample glTF files</h3>\
                          <div class="container"></div>\
-                         <p>Alternately, drag & drop or load your glTF files. Sorry, .glb files are not supported at this time</p>\
+                         <p>Alternately, drag & drop or load your glTF 2.0 files. Sorry, .glb files are not supported at this time</p>\
                          <p>When loading, please drag/drop/multiselect all files simultaneously (gltf, bin, images)</p>';
         this.dom = {};
     }
@@ -718,20 +718,20 @@ class AnimationTimeline extends HTMLElement {
     _drawTrack(animationIndex, name, data) {
         let canvas = this.dom['animation-' + animationIndex + '-track-' + name];
         this.timelineWidth = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
-        canvas.width = this.timelineWidth
+        canvas.width = this.timelineWidth;
         canvas.height = 16;
         let ctx = canvas.getContext('2d');
         for (let c = 0; c < data.length; c++) {
-            if (data[c].transform.rotation) {
-                let alpha = (data[c].transform.deltas.rotation - this.deltaRanges[name].rotation.min) / (this.deltaRanges[name].rotation.max - this.deltaRanges[name].rotation.min);
+            if (data[c].transform.translation) {
+                let alpha = (data[c].transform.deltas.position - this.deltaRanges[name].position.min) / (this.deltaRanges[name].position.max - this.deltaRanges[name].position.min);
                 ctx.fillStyle = `rgba(0, 255, 0, ${alpha ? alpha : 0})`;
                 ctx.fillRect(data[c].time * this.pixelsPerSecond, 0, this.keyframeSize.width, this.keyframeSize.height);
                 ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
                 ctx.lineWidth = .25;
                 ctx.strokeRect(data[c].time * this.pixelsPerSecond, 0, this.keyframeSize.width, this.keyframeSize.height);
             }
-            if (data[c].transform.translation) {
-                let alpha = (data[c].transform.deltas.position - this.deltaRanges[name].position.min) / (this.deltaRanges[name].position.max - this.deltaRanges[name].position.min);
+            if (data[c].transform.rotation) {
+                let alpha = (data[c].transform.deltas.rotation - this.deltaRanges[name].rotation.min) / (this.deltaRanges[name].rotation.max - this.deltaRanges[name].rotation.min);
                 ctx.fillStyle = `rgba(255, 165, 0, ${alpha ? alpha : 0})`;
                 ctx.fillRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width+1, this.keyframeSize.width, this.keyframeSize.height);
                 ctx.strokeStyle = 'rgba(255, 165, 0, 1)';
@@ -778,9 +778,22 @@ class AnimationTimeline extends HTMLElement {
                 for (let c = 1; c < timeline.animations[d].animation.tracks[track].length; c++) {
                     let t1 = timeline.animations[d].animation.tracks[track][c].transform;
                     let t0 = timeline.animations[d].animation.tracks[track][c-1].transform;
-                    let dPos = Math.sqrt(Math.pow(t1.translation.x - t0.translation.x, 2) + Math.pow(t1.translation.y - t0.translation.y, 2) + Math.pow(t1.translation.z - t0.translation.z, 2));
-                    let dRot = Math.sqrt(Math.pow(t1.rotation.x - t0.rotation.x, 2) + Math.pow(t1.rotation.y - t0.rotation.y, 2) + Math.pow(t1.rotation.z - t0.rotation.z, 2));
-                    let dScale = Math.sqrt(Math.pow(t1.scale.x - t0.scale.x, 2) + Math.pow(t1.scale.y - t0.scale.y, 2) + Math.pow(t1.scale.z - t0.scale.z, 2));
+
+                    let dPos = 0;
+                    if (t1.translation && t0.translation) {
+                        dPos = Math.sqrt(Math.pow(t1.translation.x - t0.translation.x, 2) + Math.pow(t1.translation.y - t0.translation.y, 2) + Math.pow(t1.translation.z - t0.translation.z, 2));
+                    }
+
+                    let dRot = 0;
+                    if (t1.rotation && t0.rotation) {
+                        dRot = Math.sqrt(Math.pow(t1.rotation.x - t0.rotation.x, 2) + Math.pow(t1.rotation.y - t0.rotation.y, 2) + Math.pow(t1.rotation.z - t0.rotation.z, 2));
+                    }
+
+                    let dScale = 0;
+                    if (t1.scale && t0.scale) {
+                        dScale = Math.sqrt(Math.pow(t1.scale.x - t0.scale.x, 2) + Math.pow(t1.scale.y - t0.scale.y, 2) + Math.pow(t1.scale.z - t0.scale.z, 2));
+                    }
+
                     timeline.animations[d].animation.tracks[track][c].transform.deltas = { position: dPos, rotation: dRot, scaling: dScale };
 
                     if (!this.deltaRanges[track].rotation) {

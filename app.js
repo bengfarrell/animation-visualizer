@@ -1355,9 +1355,9 @@ var GLTFObject = function (_BaseGroup) {
             var worldExtends = scene.getWorldExtends();
             var sceneMidPoint = void 0;
             if (this._useRightHandedCoordinates) {
-                sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x) / 2, worldExtends.max.y, (worldExtends.max.z + worldExtends.min.z) / 2);
-            } else {
                 sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x) / 2, (worldExtends.max.y + worldExtends.min.y) / 2, (worldExtends.max.z + worldExtends.min.z) / 2);
+            } else {
+                var _sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x) / 2, (worldExtends.max.y + worldExtends.min.y) / 2, (worldExtends.max.z + worldExtends.min.z) / 2);
             }
             scene.activeCamera.setTarget(sceneMidPoint);
         }
