@@ -1,0 +1,574 @@
+aviz-nodes-list {
+}
+
+aviz-nodes-list .node-header,
+aviz-nodes-list .breadcrumbs {
+    padding-bottom: 5px;
+    padding-left: 10px;
+    font-size: x-small;
+    font-weight: bold;
+    background-color: #466c78;
+}
+
+aviz-nodes-list .node-header {
+    padding-top: 15px;
+}
+
+aviz-nodes-list .breadcrumbs {
+    cursor: pointer;
+}
+
+aviz-nodes-list .breadcrumbs span.circle::before {
+    content: "—";
+    margin-left: -5px;
+    font-weight: bold;
+}
+
+aviz-nodes-list ul {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    overflow: scroll;
+}
+
+aviz-nodes-list li:not(:last-child) {
+    border-bottom-color: #ababab;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+aviz-nodes-list li.disabled:not(:last-child) {
+    border-bottom-color: #8a8a8a;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+aviz-nodes-list .breadcrumbs span.circle {
+    border-radius: 10px;
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+    background-color: whitesmoke;
+    display: inline-block;
+}
+
+aviz-nodes-list li {
+    list-style: none;
+    background-color: #202929;
+}
+
+aviz-nodes-list li .transform {
+    font-size: x-small;
+    background-color: #3f4a4a;
+    padding-left: 5px;
+    padding-bottom: 8px;
+}
+
+aviz-nodes-list li .name {
+    font-size: x-small;
+    padding-top: 10px;
+}
+
+aviz-nodes-list li .expand {
+    cursor: pointer;
+    text-align: right;
+    padding-bottom: 5px;
+}
+
+aviz-nodes-list .expand a {
+    font-weight: lighter;
+    font-size: x-small;
+    text-decoration: underline;
+}
+
+aviz-nodes-list li p {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin: 0;
+}
+
+aviz-nodes-list li .transform .scale,
+aviz-nodes-list li .transform .position,
+aviz-nodes-list li .transform .rotation {
+    padding-top: 3px;
+    display: block;
+}
+
+aviz-nodes-list li .transform .scale div.value,
+aviz-nodes-list li .transform .position div.value,
+aviz-nodes-list li .transform .rotation div.value {
+    width: 25px;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    text-align: right;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+aviz-nodes-list li .transform .scale .transform-label,
+aviz-nodes-list li .transform .position .transform-label,
+aviz-nodes-list li .transform .rotation .transform-label {
+    border-color: black;
+    border-style: solid;
+    border-width: 1px;
+    width: 7px;
+    padding: 2px;
+    color: black;
+    padding-left: 3px;
+    margin-right: 10px;
+    display: inline-block;
+}
+
+aviz-nodes-list li .transform .position .transform-label {
+    background-color: #00ff01;
+}
+
+aviz-nodes-list li .transform .scale .transform-label {
+    background-color: #ffff01;
+}
+
+aviz-nodes-list li .transform .rotation .transform-label {
+    background-color: #ffa500;
+}
+
+aviz-playback-controls {
+    user-select: none;
+}
+
+aviz-playback-controls .button-container {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: inline-block;
+    position: relative;
+}
+
+aviz-playback-controls .load-button {
+    background: #466c78;
+    display: inline-block;
+    height: 32px;
+    border-radius: 5px;
+    border: 1px solid #9f9f9f;
+    color: whitesmoke;
+    float: right;
+    width: 105px;
+
+    position: relative;
+    overflow: hidden;
+    margin: 5px;
+}
+
+aviz-playback-controls .load-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0;
+    filter: alpha(opacity=0);
+}
+
+aviz-playback-controls .load-button div {
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+aviz-playback-controls .time-display {
+    color: whitesmoke;
+    width: 100px;
+    display: inline-block;
+    text-align: center;
+    padding-bottom: 16px;
+    vertical-align: bottom;
+}
+
+aviz-playback-controls .animation-selector {
+    display: inline-block;
+    border: 1px solid #9f9f9f;
+    width: 120px;
+    height: 32px;
+    border-radius: 3px;
+    overflow: hidden;
+    background: #466c78 url("./assets/caret-down.png") no-repeat 90% 50%;
+    background-size: 10%;
+}
+
+aviz-playback-controls .animation-selector select {
+    padding: 9px 8px;
+    color: whitesmoke;
+    width: 130%;
+    border: none;
+    box-shadow: none;
+    background: transparent;
+    background-image: none;
+    -webkit-appearance: none;
+}
+
+aviz-playback-controls .animation-selector select:focus {
+    outline: none;
+}
+
+aviz-playback-controls .btn {
+    height: 32px;
+    width: 32px;
+    background-color: #466c78;
+    display: inline-block;
+    background-size: 30%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+
+    border-style: solid;
+    border-color: #9f9f9f;
+    border-width: 1px;
+    cursor: pointer;
+}
+
+aviz-playback-controls .btn:hover {
+    background-color: #6b9ba8;
+}
+
+aviz-playback-controls .fast-backward {
+    background-image: url('./assets/fast-backward_btn.png');
+}
+
+aviz-playback-controls .fast-forward {
+    background-image: url('./assets/fast-forward_btn.png');
+}
+
+aviz-playback-controls .step-backward {
+    background-image: url('./assets/step-back_btn.png');
+}
+
+aviz-playback-controls .step-forward {
+    background-image: url('./assets/step-forward_btn.png');
+}
+
+aviz-playback-controls .play {
+    background-image: url('./assets/play_btn.png');
+}
+
+aviz-playback-controls .pause {
+    background-image: url('./assets/pause_btn.png');
+}
+
+aviz-sample-gltfs {
+    text-align: center;
+}
+
+aviz-sample-gltfs .container a {
+    color: whitesmoke;
+}
+
+aviz-scene-info {
+    padding: 5px;
+}
+
+aviz-scene-info a.coordinate-system {
+    float: right;
+    color: whitesmoke;
+}
+
+aviz-timeline {
+    font-size: x-small;
+    overflow: hidden;
+    user-select: none;
+}
+
+aviz-timeline .timeline .timeline-view {
+    position: relative;
+}
+
+aviz-timeline .timeline .playback-line {
+    width: 1px;
+    height: 100%;
+    background-color: #7cbfcd;
+    position: absolute;
+    display: inline-block;
+    top: 0px;
+    left: 150px;
+}
+
+aviz-timeline .timeline .animation-header {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #535353;
+}
+
+aviz-timeline .timeline {
+    height: calc(100% - 4px);
+    width: calc(100% - 114px);
+    display: inline-block;
+}
+
+aviz-timeline .timeline-track {
+    background-color: #3f4a4a;
+    padding-top: 5px;
+    margin-top: 1px;
+}
+
+aviz-timeline .timeline-track.selected {
+    background-color: #5a5e12;
+}
+
+aviz-timeline .timeline-timelabels .tick-container {
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+
+aviz-timeline .timeline-track div.track-label {
+    font-size: x-small;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding: 5px;
+}
+
+aviz-timeline .timeline-track div.track-label .icon-eye {
+    height: 8px;
+    width: 15px;
+    background-size: 15px 8px;
+    margin-right: 10px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+aviz-timeline .timeline-track div.track-label .icon-eye.on {
+    background-image: url("./assets/icon-eye.png");
+}
+
+aviz-timeline .timeline-track div.track-label .icon-eye.off {
+    background-image: url("./assets/icon-eye-off.png");
+}
+
+aviz-timeline .timeline-track canvas {
+    padding: 2px;
+}
+
+aviz-timeline .timeline-view {
+    height: calc(100% - 34px);
+    width: calc(100% - 2px);
+    overflow: scroll;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
+    background-color: #202929;
+}
+
+aviz-timeline .timeline-timelabels {
+    position: relative;
+    height: 34px;
+    width: calc(100% - 2px);
+    overflow: hidden;
+    background-color: #466c78;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
+
+    border-top-style: solid;
+    border-top-width: 1px;
+    border-top-color: whitesmoke;
+}
+
+aviz-timeline .timeline-timelabels .playback-head {
+    position: absolute;
+    top: 0px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 7px 10px 7px;
+    border-color: transparent transparent #95d5e6 transparent;
+}
+
+aviz-timeline .keyframe-info {
+    width: 100px;
+    height: 100%;
+    float: right;
+    padding-left: 10px;
+    background-color: #466c78;
+    overflow-y: scroll;
+}
+
+aviz-timeline .keyframe-info .item .label {
+    font-weight: bolder;
+    width: 20px;
+    display: inline-block;
+}
+
+aviz-timeline .keyframe-info .item {
+    border-left-style: solid;
+    border-left-width: 5px;
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+aviz-timeline .keyframe-info .item .axis {
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: whitesmoke;
+    padding-top: 5px;
+}
+
+aviz-timeline .keyframe-info .item.position {
+    border-left-color: #00ff00;
+}
+
+aviz-timeline .keyframe-info .item.rotation {
+    border-left-color: #ffa500;
+}
+
+aviz-timeline .keyframe-info .item.scale {
+    border-left-color: #ffff00;
+}
+
+aviz-timeline input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background-color: #466c78;
+    margin-top: 5px;
+    margin-left: -1px;
+}
+aviz-timeline input[type=range]:focus {
+    outline: none;
+}
+aviz-timeline input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: #5b8693;
+    border-radius: 4.5px;
+}
+aviz-timeline input[type=range]::-webkit-slider-thumb {
+    height: 5px;
+    width: 5px;
+    border-radius: 8px;
+    background: #ffffff;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: 1.3px;
+}
+aviz-timeline input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #6793a1;
+}
+aviz-timeline input[type=range]::-moz-range-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: #5b8693;
+    border-radius: 4.5px;
+}
+aviz-timeline input[type=range]::-moz-range-thumb {
+    height: 5px;
+    width: 5px;
+    border-radius: 12px;
+    background: #ffffff;
+    cursor: pointer;
+}
+aviz-timeline input[type=range]::-ms-track {
+    width: 100%;
+    height: 7px;
+    cursor: pointer;
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+}
+aviz-timeline input[type=range]::-ms-fill-lower {
+    background: #517883;
+    border-radius: 9px;
+}
+aviz-timeline input[type=range]::-ms-fill-upper {
+    background: #5b8693;
+    border-radius: 9px;
+}
+aviz-timeline input[type=range]::-ms-thumb {
+    width: 5px;
+    border-radius: 12px;
+    background: #ffffff;
+    cursor: pointer;
+    height: 5px;
+}
+aviz-timeline input[type=range]:focus::-ms-fill-lower {
+    background: #5b8693;
+}
+aviz-timeline input[type=range]:focus::-ms-fill-upper {
+    background: #6793a1;
+}
+
+aviz-nodes-list {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    width: 230px;
+    height: 100%;
+}
+
+aviz-sample-gltfs {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+aviz-timeline {
+    flex: 1;
+    margin-left: 3px;
+}
+
+aviz-playback-controls {
+    height: 50px;
+    margin-left: 3px;
+}
+
+.app {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.ui-container {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: #466c78;
+}
+
+.center-panel {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.canvas-container {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+
+canvas#scene {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+body {
+    background-color: rgba(0,0,0,0.75);
+    padding: 0px;
+    color: whitesmoke;
+    font-family: "Adobe Clean";
+    font-size: small;
+    margin: 0px;
+    overflow: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
