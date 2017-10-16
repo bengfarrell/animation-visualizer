@@ -20,6 +20,9 @@
     <script src="src/components/aviz-sample-gltfs/aviz-sample-gltfs.js"></script>
     <link href="src/components/aviz-sample-gltfs/aviz-sample-gltfs.css" rel="stylesheet" />
 
+    <script src="src/components/aviz-scene-info/aviz-scene-info.js"></script>
+    <link href="src/components/aviz-scene-info/aviz-scene-info.css" rel="stylesheet" />
+
     <link href="src/main.css" rel="stylesheet" />
 </head>
 <body>
@@ -37,6 +40,8 @@
         <canvas id="scene"></canvas>
         <aviz-sample-gltfs manifest="samples.json"></aviz-sample-gltfs>
     </div>
+
+    <aviz-scene-info></aviz-scene-info>
 </div>
 
 <script>
@@ -52,6 +57,7 @@
                     timeline: document.querySelector('aviz-timeline'),
                     nodes: document.querySelector('aviz-nodes-list'),
                     scene: document.querySelector('canvas.scene'),
+                    info: document.querySelector('aviz-scene-info'),
                     samples: document.querySelector('aviz-sample-gltfs')
                 }
             } );

@@ -32,6 +32,7 @@ export default class Application extends BaseApplication {
         this.config.components.controls.addEventListener(AnimationPlaybackControls.CONTROL_CLICKED, e => this.onPlaybackControlClicked(e));
         this.config.components.controls.addEventListener(AnimationPlaybackControls.LOAD_GLTF, e => this.loadFile(e));
         this.config.components.samples.addEventListener(AnimationSampleGLTFs.SELECT_REMOTE_FILE, e => this.loadFile(e));
+        this.config.components.info.addEventListener(AnimationSceneInfo.SWITCH_COORDINATE_SYSTEM, e => this.switchCoordinateSystem(e));
         this.time = 0;
         this.playing = false;
         this.gltf = this.add( new GLTFObject() );
@@ -44,12 +45,15 @@ export default class Application extends BaseApplication {
         loader.addListener(GLTFFileLoader.LOADED, (eventtype, event) => this.onGLTFData(event));
         if (typeof event === 'string') {
             let uri = event;
+            this.config.components.info.setAttribute('filename', uri);
             loader.loadRemote(uri);
             this.gltf.load(uri);
         } else if (event.detail.uri) {
+            this.config.components.info.setAttribute('filename', event.detail.uri);
             loader.loadRemote(event.detail.uri);
             this.gltf.load(event.detail.uri);
         } else {
+            this.config.components.info.setAttribute('filename', event.detail.files[0].name);
             loader.loadLocal(event.detail.files);
             this.gltf.load(event.detail.inputevent);
         }
@@ -63,6 +67,10 @@ export default class Application extends BaseApplication {
         this.gltf.duration = timeline.duration;
         this.config.components.controls.duration = timeline.duration;
         this.config.components.nodes.data = event.gltf.nodes;
+    }
+
+    switchCoordinateSystem(event) {
+        this.gltf.useRightHandedSystem = event.detail.rightHanded;
     }
 
     onScrubTimeline(event) {

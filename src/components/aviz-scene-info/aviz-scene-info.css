@@ -1,0 +1,8 @@
+aviz-scene-info {
+    padding: 5px;
+}
+
+aviz-scene-info a.coordinate-system {
+    float: right;
+    color: whitesmoke;
+}

@@ -10,7 +10,13 @@ export default class GLTFObject extends BaseGroup {
         this._duration = 0;
         this._currentTime = 0;
         BABYLON.SceneLoader.ShowLoadingScreen = false;
+        this._useRightHandedCoordinates = false;
         this.filesInput = new BABYLON.FilesInput(this.engine, this.scene, this.canvas, (scenefile, scene) => this.onSceneLoaded(scenefile, scene));
+    }
+
+    set useRightHandedSystem(val) {
+        this._useRightHandedCoordinates = val;
+        this.scene.useRightHandedSystem = val;
     }
 
     load(value) {
@@ -31,7 +37,11 @@ export default class GLTFObject extends BaseGroup {
 
     onMeshesLoaded(asset) {
         this.add(asset.loadedMeshes);
-        this.group.rotation.x = -Math.PI/2;
+        if (this._useRightHandedCoordinates) {
+            this.group.rotation.x = Math.PI/2;
+        } else {
+            this.group.rotation.x = -Math.PI/2;
+        }
         this.prepareScene(this.scene);
     }
 
@@ -63,7 +73,12 @@ export default class GLTFObject extends BaseGroup {
         }, 50);
 
         let worldExtends = scene.getWorldExtends();
-        let sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, worldExtends.max.y, (worldExtends.max.z + worldExtends.min.z)/2);
+        let sceneMidPoint;
+        if (this._useRightHandedCoordinates) {
+            sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, worldExtends.max.y, (worldExtends.max.z + worldExtends.min.z)/2);
+        } else {
+            sceneMidPoint = new BABYLON.Vector3((worldExtends.max.x + worldExtends.min.x)/2, (worldExtends.max.y + worldExtends.min.y)/2, (worldExtends.max.z + worldExtends.min.z)/2);
+        }
         scene.activeCamera.setTarget( sceneMidPoint );
     }
 
