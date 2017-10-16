@@ -1,4 +1,4 @@
-[ { "name": "Golfer", "uri": "./examples/golfer/golfer.gltf" },
+[ { "name": "Golfer (note: switch to right-handed before loading)", "uri": "./examples/golfer/golfer.gltf" },
   { "name": "Cesium Man", "uri": "./examples/cesiumman/CesiumMan.gltf" },
   { "name": "Rigged Figure", "uri": "./examples/riggedfigure/RiggedFigure.gltf" },
   { "name": "Monster", "uri": "./examples/monster/Monster.gltf" }
