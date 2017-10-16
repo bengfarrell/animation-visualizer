@@ -18,6 +18,12 @@ aviz-timeline .timeline .playback-line {
     left: 150px;
 }
 
+aviz-timeline .timeline .animation-header {
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #535353;
+}
+
 aviz-timeline .timeline {
     height: calc(100% - 4px);
     width: calc(100% - 114px);
@@ -26,8 +32,8 @@ aviz-timeline .timeline {
 
 aviz-timeline .timeline-track {
     background-color: #3f4a4a;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    padding-top: 5px;
+    margin-top: 1px;
 }
 
 aviz-timeline .timeline-track.selected {

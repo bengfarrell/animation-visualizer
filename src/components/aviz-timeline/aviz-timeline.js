@@ -8,6 +8,7 @@ class AnimationTimeline extends HTMLElement {
         this._populateDeltas(this.timeline);
         this._drawTimelineLabel();
         for (let c = 0; c < this.timeline.animations.length; c++) {
+            this._createAnimationHeader(c);
             for (let track in this.timeline.animations[c].animation.tracks) {
                 this._createTrack(c, track, this.timeline.animations[c].animation.tracks[track]);
             }
@@ -121,6 +122,13 @@ class AnimationTimeline extends HTMLElement {
         this.dom.axislabel.addEventListener('mousedown', e => this._onLabelTrackMouseDown(e));
         this.addEventListener('mouseup', e => this._onLabelTrackMouseUp(e));
         this.dom.axislabel.addEventListener('mousemove', e => this._onLabelTrackMouseMove(e));
+    }
+
+    _createAnimationHeader(animationIndex) {
+        let header = document.createElement('DIV');
+        header.classList.add('animation-header');
+        header.innerHTML = '<span>Animation ' + animationIndex + '</span>';
+        this.dom.container.appendChild(header);
     }
 
     _createTrack(animationIndex, name, data) {
@@ -259,7 +267,13 @@ class AnimationTimeline extends HTMLElement {
 
         let labels = this.querySelectorAll('.track-label');
         for (let c = 0; c < labels.length; c++) {
-            labels[c].style.paddingLeft = this.dom.container.scrollLeft + this.keyframeSize.width + 'px';
+            labels[c].style.paddingLeft = this.dom.container.scrollLeft + this.keyframeSize.width + 15 + 'px';
+        }
+
+        let animheaders = this.querySelectorAll('.animation-header span');
+        for (let c = 0; c < animheaders.length; c++) {
+            animheaders[c].style.paddingLeft = this.dom.container.scrollLeft + 5 + 'px';
+            animheaders[c].parentNode.style.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width - 15 + 'px';
         }
 
         let tracks = this.querySelectorAll('.timeline-track');
