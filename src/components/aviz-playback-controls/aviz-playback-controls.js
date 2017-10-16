@@ -24,29 +24,14 @@ class AnimationPlaybackControls extends HTMLElement {
         //document.body.addEventListener("dragleave", e => this.onFileHover(e), false);
     }
 
-    /*set numOfAnimations(val) {
-        this.dom.animationSelector.innerHTML = '';
-        let opt = document.createElement('option');
-        opt.innerText = 'All animations';
-        opt.value = 'all';
-        this.dom.animationSelector.appendChild(opt);
-
-        for (let c = 0; c < val; c++) {
-            opt = document.createElement('option');
-            opt.innerText = 'Animation ' + Number(c + 1);
-            opt.value = c;
-            this.dom.animationSelector.appendChild(opt);
-        }
-
-        let e = new CustomEvent(AnimationPlaybackControls.ANIMATION_SELECTED, { 'detail': { animationIndex: 'all' } });
-        this.dispatchEvent(e);
-    }*/
-
     set time(value) {
         if (this._duration === 0) {
             return;
         }
-        value = value % this._duration;
+
+        if (value > this._duration) {
+            value = value % this._duration;
+        }
         this.dom.timeDisplay.innerText = value.toFixed(3) + ' / ' + this._duration.toFixed(3);
     }
 
@@ -63,12 +48,10 @@ class AnimationPlaybackControls extends HTMLElement {
         this.dom.buttons.stepBackwardBtn = this.querySelector('.step-backward');
         this.dom.buttons.playpauseBtn = this.querySelector('.playpause');
         this.dom.buttonContainer = this.querySelector('.button-container');
-        //this.dom.animationSelector = this.querySelector('.animation-selector select');
         this.dom.loadGLTFButton = this.querySelector('.load-button');
         this.dom.timeDisplay = this.querySelector('.time-display');
         this.dom.fileInput = this.querySelector('.file-input');
         this.dom.buttonContainer.addEventListener('click', e => this.onButtonClick(e));
-        //this.dom.animationSelector.addEventListener('change', e => this.onAnimationSelected(e));
         this.dom.fileInput.addEventListener('change', e => this.onFileInputChange(e));
         this.togglePlay(false);
     }
@@ -87,11 +70,6 @@ class AnimationPlaybackControls extends HTMLElement {
         event.stopPropagation();
         event.preventDefault();
     }
-
-    /*onAnimationSelected(event) {
-        let e = new CustomEvent(AnimationPlaybackControls.ANIMATION_SELECTED, { 'detail': { animationIndex: event.currentTarget.value } });
-        this.dispatchEvent(e);
-    }*/
 
     onFileInputChange(event) {
         if (!event.target.files[0]) {

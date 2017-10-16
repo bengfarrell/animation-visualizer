@@ -4,6 +4,8 @@ class AnimationTimeline extends HTMLElement {
     set data(timeline) {
         this.destroy();
 
+        this.timelineWidth = 0;
+        this.createPlaybackLine();
         this.timeline = timeline;
         this._populateDeltas(this.timeline);
         this._drawTimelineLabel();
@@ -23,6 +25,12 @@ class AnimationTimeline extends HTMLElement {
         this.dom.container.innerHTML = '';
     }
 
+    createPlaybackLine() {
+        this.dom.playbackLine = document.createElement('div');
+        this.dom.playbackLine.classList.add('playback-line');
+        this.dom.container.appendChild(this.dom.playbackLine);
+    }
+
     set currentTime(seconds) {
         if (this.timeline && !this._draggingPlayhead) {
             this.relativeTime = seconds % this.timeline.duration;
@@ -35,7 +43,6 @@ class AnimationTimeline extends HTMLElement {
         super();
         this.template = '<div class="timeline">\
                             <div class="timeline-view">\
-                                <div class="playback-line"></div>\
                             </div> \
                             <div class="timeline-timelabels">\
                                 <div class="tick-container">\
@@ -160,7 +167,8 @@ class AnimationTimeline extends HTMLElement {
 
     _drawTrack(animationIndex, name, data) {
         let canvas = this.dom['animation-' + animationIndex + '-track-' + name];
-        canvas.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
+        this.timelineWidth = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
+        canvas.width = this.timelineWidth
         canvas.height = 16;
         let ctx = canvas.getContext('2d');
         for (let c = 0; c < data.length; c++) {
@@ -393,14 +401,25 @@ class AnimationTimeline extends HTMLElement {
 
     _scrubTimeline(posX, endscrub) {
         let bounds = event.currentTarget.getBoundingClientRect();
+        if (posX > this.timelineWidth) {
+            posX = this.timelineWidth;
+        }
         this.dom.playbackLine.style.left = posX + 'px';
         this.dom.playbackHead.style.left = posX - 7 + 'px';
+
+        let time = (posX-1) / this.pixelsPerSecond;
+        if (time < 0) {
+            time = 0;
+        }
+        if (time > this.timeline.duration) {
+            time = this.timeline.duration;
+        }
 
         let e = new CustomEvent(AnimationTimeline.SCRUB_TIMELINE, {
             'detail': {
                 resumeplayback: endscrub,
-                playbacktime: posX / this.pixelsPerSecond,
-                playbackratio: (posX / this.pixelsPerSecond) / this.timeline.duration
+                playbacktime: time,
+                playbackratio: time / this.timeline.duration
             }});
         this.dispatchEvent(e);
     }
