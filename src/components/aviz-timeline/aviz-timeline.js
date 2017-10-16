@@ -128,7 +128,7 @@ class AnimationTimeline extends HTMLElement {
         this.dom.zoomSlider.addEventListener('input', e => this._onZoom(e));
         this.dom.axislabel.addEventListener('mousedown', e => this._onLabelTrackMouseDown(e));
         this.addEventListener('mouseup', e => this._onLabelTrackMouseUp(e));
-        this.dom.axislabel.addEventListener('mousemove', e => this._onLabelTrackMouseMove(e));
+        this.addEventListener('mousemove', e => this._onLabelTrackMouseMove(e));
     }
 
     _createAnimationHeader(animationIndex) {
