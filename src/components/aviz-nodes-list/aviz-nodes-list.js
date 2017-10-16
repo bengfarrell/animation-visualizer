@@ -82,7 +82,7 @@ class AnimationNodes extends HTMLElement {
         }
 
         if (!transform.rotation) {
-            tRot = ['-', '-', '-'];
+            tRot = ['-', '-', '-', '-'];
         } else {
             tRot = [transform.rotation[0].toFixed(2), transform.rotation[1].toFixed(2), transform.rotation[2].toFixed(2), transform.rotation[3].toFixed(2) ];
         }
