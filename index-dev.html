@@ -4,23 +4,22 @@
     <meta charset="UTF-8">
     <title>Animation Visualizer</title>
     <script src="node_modules/@webcomponents/custom-elements/custom-elements.min.js"></script>
-    <script src="node_modules/macgyvr/macgyvr-full-dev.js"></script>
+    <script src="node_modules/babylonjs/dist/preview%20release/babylon.js"></script>
     <script src="node_modules/macgyvr/extras/babylon.glTF2FileLoader.js"></script>
 
-
-    <script src="src/components/aviz-playback-controls/aviz-playback-controls.js"></script>
+    <script type="module" src="src/components/aviz-playback-controls/aviz-playback-controls.js"></script>
     <link href="src/components/aviz-playback-controls/aviz-playback-controls.css" rel="stylesheet" />
 
-    <script src="src/components/aviz-nodes-list/aviz-nodes-list.js"></script>
+    <script type="module" src="src/components/aviz-nodes-list/aviz-nodes-list.js"></script>
     <link href="src/components/aviz-nodes-list/aviz-nodes-list.css" rel="stylesheet" />
 
-    <script src="src/components/aviz-timeline/aviz-timeline.js"></script>
+    <script type="module" src="src/components/aviz-timeline/aviz-timeline.js"></script>
     <link href="src/components/aviz-timeline/aviz-timeline.css" rel="stylesheet" />
 
-    <script src="src/components/aviz-sample-gltfs/aviz-sample-gltfs.js"></script>
+    <script type="module" src="src/components/aviz-sample-gltfs/aviz-sample-gltfs.js"></script>
     <link href="src/components/aviz-sample-gltfs/aviz-sample-gltfs.css" rel="stylesheet" />
 
-    <script src="src/components/aviz-scene-info/aviz-scene-info.js"></script>
+    <script type="module" src="src/components/aviz-scene-info/aviz-scene-info.js"></script>
     <link href="src/components/aviz-scene-info/aviz-scene-info.css" rel="stylesheet" />
 
     <link href="src/main.css" rel="stylesheet" />
@@ -44,24 +43,22 @@
     <aviz-scene-info></aviz-scene-info>
 </div>
 
-<script>
-    var loader = new BrowserESModuleLoader();
-    loader.import('./src/app.js').then(function(App) {
-        var app = new App.default(
-            document.querySelector('#scene'), {
-                scene: { useRightHandedSystem: false },
-                lights: 'arcrotate',
-                inspector: 'i',
-                components: {
-                    controls: document.querySelector('aviz-playback-controls'),
-                    timeline: document.querySelector('aviz-timeline'),
-                    nodes: document.querySelector('aviz-nodes-list'),
-                    scene: document.querySelector('canvas.scene'),
-                    info: document.querySelector('aviz-scene-info'),
-                    samples: document.querySelector('aviz-sample-gltfs')
-                }
-            } );
-    });
+<script type="module">
+    import App from './src/app.js';
+    new App(
+        document.querySelector('#scene'), {
+            scene: { useRightHandedSystem: false },
+            lights: 'arcrotate',
+            inspector: 'i',
+            components: {
+                controls: document.querySelector('aviz-playback-controls'),
+                timeline: document.querySelector('aviz-timeline'),
+                nodes: document.querySelector('aviz-nodes-list'),
+                scene: document.querySelector('canvas.scene'),
+                info: document.querySelector('aviz-scene-info'),
+                samples: document.querySelector('aviz-sample-gltfs')
+            }
+        });
 </script>
 
 </body>

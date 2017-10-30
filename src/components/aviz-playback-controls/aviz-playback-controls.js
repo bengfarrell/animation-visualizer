@@ -1,21 +1,11 @@
-class AnimationPlaybackControls extends HTMLElement {
+import Template from './template.js';
+
+export default class AnimationPlaybackControls extends HTMLElement {
     static get observedAttributes() { return []}
 
     constructor() {
         super();
         this._playing = false;
-        this.template = '   <div class="button-container">\
-                                <div class="fast-backward btn"></div>\
-                                <div class="step-backward btn"></div>\
-                                <div class="playpause btn"></div>\
-                                <div class="step-forward btn"></div>\
-                                <div class="fast-forward btn"></div>\
-                            </div>\
-                            <div class="time-display">- / -</div>\
-                            <div class="load-button">\
-                                <div>Load glTF...</div>\
-                                <input type="file" class="file-input" id="files" name="files[]" accept=".gltf, .bin, .png, .jpg, .jpeg, .gif" multiple />\
-                            </div>';
         this.dom = {};
         this._duration = 0;
 
@@ -40,7 +30,7 @@ class AnimationPlaybackControls extends HTMLElement {
     }
 
     connectedCallback() {
-        this.innerHTML = this.template;
+        this.innerHTML = Template.get();
         this.dom.buttons = {};
         this.dom.buttons.fastForwardBtn = this.querySelector('.fast-forward');
         this.dom.buttons.fastBackwardBtn = this.querySelector('.fast-backward');
@@ -145,5 +135,9 @@ AnimationPlaybackControls.FAST_FORWARD = 'fastforward';
 AnimationPlaybackControls.FAST_BACKWARD = 'fastbackward';
 AnimationPlaybackControls.STEP_FORWARD = 'stepforward';
 AnimationPlaybackControls.STEP_BACKWARD = 'stepbackward';
-customElements.define('aviz-playback-controls', AnimationPlaybackControls);
+
+if (!customElements.get('aviz-playback-controls')) {
+    customElements.define('aviz-playback-controls', AnimationPlaybackControls);
+}
+
 

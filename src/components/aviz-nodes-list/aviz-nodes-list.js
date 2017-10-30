@@ -1,4 +1,6 @@
-class AnimationNodes extends HTMLElement {
+import Template from './template.js';
+
+export default class AnimationNodes extends HTMLElement {
     static get observedAttributes() { return []}
 
     constructor() {
@@ -8,15 +10,11 @@ class AnimationNodes extends HTMLElement {
         this._tree = { name: "Scene Root", index: -1, children: [] };
         this._list = [];
         this._breadcrumbTrail = [];
-        this.template = '  <div class="node-header"></div>\
-                           <div class="breadcrumbs"></div>\
-                            <ul class="nodes-list">\
-                           </ul>';
         this.dom = {};
     }
 
     connectedCallback() {
-        this.innerHTML = this.template;
+        this.innerHTML = Template.get();
         this.dom.list = this.querySelector('ul');
         this.dom.header = this.querySelector('.node-header');
         this.dom.breadcrumbs = this.querySelector('.breadcrumbs');
@@ -211,5 +209,7 @@ class AnimationNodes extends HTMLElement {
     adoptedCallback(oldDocument, newDocument) {}
 }
 
-customElements.define('aviz-nodes-list', AnimationNodes);
+if (!customElements.get('aviz-nodes-list')) {
+    customElements.define('aviz-nodes-list', AnimationNodes);
+}
 

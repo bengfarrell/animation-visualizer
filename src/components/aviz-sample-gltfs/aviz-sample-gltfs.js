@@ -1,17 +1,15 @@
-class AnimationSampleGLTFs extends HTMLElement {
+import Template from './template.js';
+
+export default class AnimationSampleGLTFs extends HTMLElement {
     static get observedAttributes() { return []}
 
     constructor() {
         super();
-        this.template = '<h3>Sample glTF files</h3>\
-                         <div class="container"></div>\
-                         <p>Alternately, drag & drop or load your glTF 2.0 files. Sorry, .glb files are not supported at this time</p>\
-                         <p>When loading, please drag/drop/multiselect all files simultaneously (gltf, bin, images)</p>';
         this.dom = {};
     }
 
     connectedCallback() {
-        this.innerHTML = this.template;
+        this.innerHTML = Template.get();
         this.dom.list = this.querySelector('.container');
         this.dom.list.addEventListener('click', e => this.onFileClicked(e));
 
@@ -45,5 +43,8 @@ class AnimationSampleGLTFs extends HTMLElement {
 }
 
 AnimationSampleGLTFs.SELECT_REMOTE_FILE = 'onRemoteFileSelected';
-customElements.define('aviz-sample-gltfs', AnimationSampleGLTFs);
+
+if (!customElements.get('aviz-sample-gltfs')) {
+    customElements.define('aviz-sample-gltfs', AnimationSampleGLTFs);
+}
 

@@ -15,13 +15,10 @@ var replace = require('gulp-replace');
  */
 gulp.task('dependencies', function() {
     return gulp.src([
-        './node_modules/macgyvr/macgyvr-full.js',
+        './node_modules/babylonjs/dist/preview release/babylon.js',
+        './node_modules/macgyvr/extras/babylon.glTF2FileLoader.js',
         './node_modules/@webcomponents/custom-elements/custom-elements.min.js',
-        './src/components/aviz-nodes-list/aviz-nodes-list.js',
-        './src/components/aviz-playback-controls/aviz-playback-controls.js',
-        './src/components/aviz-sample-gltfs/aviz-sample-gltfs.js',
-        './src/components/aviz-scene-info/aviz-scene-info.js',
-        './src/components/aviz-timeline/aviz-timeline.js'
+        './node_modules/@webcomponents/custom-elements/src/native-shim.js'
     ])
         .pipe(concat('libs.js'))
         .pipe(gulp.dest('./'));

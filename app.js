@@ -655,6 +655,26 @@ var _gltfobject = require('./objects/gltfobject.js');
 
 var _gltfobject2 = _interopRequireDefault(_gltfobject);
 
+var _avizTimeline = require('./components/aviz-timeline/aviz-timeline.js');
+
+var _avizTimeline2 = _interopRequireDefault(_avizTimeline);
+
+var _avizPlaybackControls = require('./components/aviz-playback-controls/aviz-playback-controls.js');
+
+var _avizPlaybackControls2 = _interopRequireDefault(_avizPlaybackControls);
+
+var _avizSampleGltfs = require('./components/aviz-sample-gltfs/aviz-sample-gltfs.js');
+
+var _avizSampleGltfs2 = _interopRequireDefault(_avizSampleGltfs);
+
+var _avizSceneInfo = require('./components/aviz-scene-info/aviz-scene-info.js');
+
+var _avizSceneInfo2 = _interopRequireDefault(_avizSceneInfo);
+
+var _avizNodesList = require('./components/aviz-nodes-list/aviz-nodes-list.js');
+
+var _avizNodesList2 = _interopRequireDefault(_avizNodesList);
+
 function _interopRequireDefault(obj) {
     return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -691,25 +711,25 @@ var Application = function (_BaseApplication) {
         value: function onCreate(scene) {
             var _this2 = this;
 
-            this.config.components.timeline.addEventListener(AnimationTimeline.TRACK_SELECTED, function (e) {
+            this.config.components.timeline.addEventListener(_avizTimeline2.default.TRACK_SELECTED, function (e) {
                 return _this2.onTrackSelection(e);
             });
-            this.config.components.timeline.addEventListener(AnimationTimeline.SCRUB_TIMELINE, function (e) {
+            this.config.components.timeline.addEventListener(_avizTimeline2.default.SCRUB_TIMELINE, function (e) {
                 return _this2.onScrubTimeline(e);
             });
-            this.config.components.timeline.addEventListener(AnimationTimeline.TRACK_VISIBILITY_CHANGED, function (e) {
+            this.config.components.timeline.addEventListener(_avizTimeline2.default.TRACK_VISIBILITY_CHANGED, function (e) {
                 return _this2.onTrackVisibilityChanged(e);
             });
-            this.config.components.controls.addEventListener(AnimationPlaybackControls.CONTROL_CLICKED, function (e) {
+            this.config.components.controls.addEventListener(_avizPlaybackControls2.default.CONTROL_CLICKED, function (e) {
                 return _this2.onPlaybackControlClicked(e);
             });
-            this.config.components.controls.addEventListener(AnimationPlaybackControls.LOAD_GLTF, function (e) {
+            this.config.components.controls.addEventListener(_avizPlaybackControls2.default.LOAD_GLTF, function (e) {
                 return _this2.loadFile(e);
             });
-            this.config.components.samples.addEventListener(AnimationSampleGLTFs.SELECT_REMOTE_FILE, function (e) {
+            this.config.components.samples.addEventListener(_avizSampleGltfs2.default.SELECT_REMOTE_FILE, function (e) {
                 return _this2.loadFile(e);
             });
-            this.config.components.info.addEventListener(AnimationSceneInfo.SWITCH_COORDINATE_SYSTEM, function (e) {
+            this.config.components.info.addEventListener(_avizSceneInfo2.default.SWITCH_COORDINATE_SYSTEM, function (e) {
                 return _this2.switchCoordinateSystem(e);
             });
             this.time = 0;
@@ -783,19 +803,19 @@ var Application = function (_BaseApplication) {
             this.playing = event.detail.isPlaying;
 
             switch (event.detail.action) {
-                case AnimationPlaybackControls.STEP_FORWARD:
+                case _avizPlaybackControls2.default.STEP_FORWARD:
                     this.time += .01;
                     break;
 
-                case AnimationPlaybackControls.STEP_BACKWARD:
+                case _avizPlaybackControls2.default.STEP_BACKWARD:
                     this.time -= .01;
                     break;
 
-                case AnimationPlaybackControls.FAST_FORWARD:
+                case _avizPlaybackControls2.default.FAST_FORWARD:
                     this.time += .1;
                     break;
 
-                case AnimationPlaybackControls.FAST_BACKWARD:
+                case _avizPlaybackControls2.default.FAST_BACKWARD:
                     this.time -= .1;
                     break;
             }
@@ -834,7 +854,1360 @@ var Application = function (_BaseApplication) {
 
 exports.default = Application;
 
-},{"../node_modules/macgyvr/src/baseapplication.js":1,"./io/gltfexploder.js":6,"./io/gltffileloader.js":7,"./objects/gltfobject.js":8}],6:[function(require,module,exports){
+},{"../node_modules/macgyvr/src/baseapplication.js":1,"./components/aviz-nodes-list/aviz-nodes-list.js":6,"./components/aviz-playback-controls/aviz-playback-controls.js":8,"./components/aviz-sample-gltfs/aviz-sample-gltfs.js":10,"./components/aviz-scene-info/aviz-scene-info.js":12,"./components/aviz-timeline/aviz-timeline.js":14,"./io/gltfexploder.js":16,"./io/gltffileloader.js":17,"./objects/gltfobject.js":18}],6:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _template = require('./template.js');
+
+var _template2 = _interopRequireDefault(_template);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var AnimationNodes = function (_HTMLElement) {
+    _inherits(AnimationNodes, _HTMLElement);
+
+    _createClass(AnimationNodes, null, [{
+        key: 'observedAttributes',
+        get: function get() {
+            return [];
+        }
+    }]);
+
+    function AnimationNodes() {
+        _classCallCheck(this, AnimationNodes);
+
+        // two ways to represent the node list (same nodes)
+        var _this = _possibleConstructorReturn(this, (AnimationNodes.__proto__ || Object.getPrototypeOf(AnimationNodes)).call(this));
+
+        _this._tree = { name: "Scene Root", index: -1, children: [] };
+        _this._list = [];
+        _this._breadcrumbTrail = [];
+        _this.dom = {};
+        return _this;
+    }
+
+    _createClass(AnimationNodes, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            this.innerHTML = _template2.default.get();
+            this.dom.list = this.querySelector('ul');
+            this.dom.header = this.querySelector('.node-header');
+            this.dom.breadcrumbs = this.querySelector('.breadcrumbs');
+
+            this.addBreadcrumb(this._tree);
+        }
+    }, {
+        key: 'selectNodeByName',
+        value: function selectNodeByName(name) {
+            for (var c = 0; c < this._list.length; c++) {
+                if (this._list[c].name == name) {
+                    var node = this._list[c];
+                    this._breadcrumbTrail = [];
+                    while (node.parent) {
+                        this._breadcrumbTrail.push(node);
+                        node = node.parent;
+                    }
+
+                    this._breadcrumbTrail.reverse();
+                    this.renderBreadcrumbs();
+                    this.renderNode(this._list[c]);
+                }
+            }
+        }
+    }, {
+        key: 'renderNode',
+        value: function renderNode(node) {
+            var _this2 = this;
+
+            this.dom.list.innerHTML = '';
+            this.dom.header.innerHTML = node.name;
+            for (var c = 0; c < node.children.length; c++) {
+                var el = document.createElement('li');
+                el.innerHTML = this.nodeTemplate(node.children[c].index, node.children[c].name, node.children[c].transform, node.children[c].children.length);
+
+                var expand = el.querySelector('.expand');
+                if (expand) {
+                    expand.addEventListener('click', function (e) {
+                        return _this2.onExpandClick(e);
+                    });
+                }
+
+                this.dom.list.appendChild(el);
+            }
+        }
+    }, {
+        key: 'renderBreadcrumbs',
+        value: function renderBreadcrumbs() {
+            var _this3 = this;
+
+            this.dom.breadcrumbs.innerHTML = '';
+            for (var c = 0; c < this._breadcrumbTrail.length - 1; c++) {
+                var el = document.createElement('span');
+                el.classList.add('circle');
+                el.dataset.index = this._breadcrumbTrail[c].index;
+                el.addEventListener('click', function (e) {
+                    return _this3.onBreadcrumbClicked(e);
+                });
+                this.dom.breadcrumbs.appendChild(el);
+            }
+        }
+    }, {
+        key: 'addBreadcrumb',
+        value: function addBreadcrumb(node) {
+            this._breadcrumbTrail.push(node);
+            this.renderBreadcrumbs();
+        }
+    }, {
+        key: 'nodeTemplate',
+        value: function nodeTemplate(index, name, transform, numChildren) {
+            var tPos = void 0,
+                tRot = void 0,
+                tScale = void 0;
+            if (!transform.position) {
+                tPos = ['-', '-', '-'];
+            } else {
+                tPos = [transform.position[0].toFixed(2), transform.position[1].toFixed(2), transform.position[2].toFixed(2)];
+            }
+
+            if (!transform.rotation) {
+                tRot = ['-', '-', '-', '-'];
+            } else {
+                tRot = [transform.rotation[0].toFixed(2), transform.rotation[1].toFixed(2), transform.rotation[2].toFixed(2), transform.rotation[3].toFixed(2)];
+            }
+
+            if (!transform.scale) {
+                tScale = ['-', '-', '-'];
+            } else {
+                tScale = [transform.scale[0].toFixed(2), transform.scale[1].toFixed(2), transform.scale[2].toFixed(2)];
+            }
+
+            var expand = '';
+            if (numChildren === 1) {
+                expand = '<a data-index="' + index + '"> + (' + numChildren + ' child)</a>';
+            } else if (numChildren > 1) {
+                expand = '<a data-index="' + index + '"> + (' + numChildren + ' children)</a>';
+            }
+
+            return '<div><p class="name">' + name + '</p><p class="expand">' + expand + '</p></div>\n                <div class="transform">\n                    <div class="position"><div class="transform-label">T</div>\n                        <div class="value">' + tPos[0] + '</div> \n                        <div class="value">' + tPos[1] + '</div>\n                        <div class="value">' + tPos[2] + '</div>\n                    </div>\n                    <div class="rotation"><div class="transform-label">R</div>\n                        <div class="value">' + tRot[0] + '</div>\n                        <div class="value">' + tRot[1] + '</div>\n                        <div class="value">' + tRot[2] + '</div>\n                        <div class="value">' + tRot[3] + '</div>\n                    </div>\n                    <div class="scale"><div class="transform-label">S</div> \n                        <div class="value">' + tScale[0] + '</div>\n                        <div class="value">' + tScale[1] + '</div> \n                        <div class="value">' + tScale[2] + '</div>\n                    </div>\n                </div>';
+        }
+    }, {
+        key: 'destroy',
+        value: function destroy() {
+            this._tree = { name: "Scene Root", index: -1, children: [] };
+            this.dom.list.innerHTML = '';
+            this.dom.breadcrumbs.innerHTML = '';
+        }
+    }, {
+        key: 'onBreadcrumbClicked',
+        value: function onBreadcrumbClicked(e) {
+            var nodeIndex = parseInt(e.target.dataset.index);
+            for (var d = 0; d < this._breadcrumbTrail.length; d++) {
+                if (nodeIndex === this._breadcrumbTrail[d].index) {
+                    this._breadcrumbTrail = this._breadcrumbTrail.splice(0, d + 1);
+                    this.renderBreadcrumbs();
+                }
+            }
+
+            if (nodeIndex === -1) {
+                this.renderNode(this._tree);
+                return;
+            }
+
+            for (var c = 0; c < this._list.length; c++) {
+                if (this._list[c].index === nodeIndex) {
+                    this.renderNode(this._list[c]);
+                    return;
+                }
+            }
+        }
+    }, {
+        key: 'onExpandClick',
+        value: function onExpandClick(e) {
+            var nodeIndex = e.target.dataset.index;
+            for (var c = 0; c < this._list.length; c++) {
+                if (this._list[c].index == nodeIndex) {
+                    this.renderNode(this._list[c]);
+                    this.addBreadcrumb(this._list[c]);
+                }
+            }
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {}
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback(attributeName, oldValue, newValue, namespace) {}
+    }, {
+        key: 'adoptedCallback',
+        value: function adoptedCallback(oldDocument, newDocument) {}
+    }, {
+        key: 'data',
+        set: function set(nodes) {
+            this.destroy();
+            this._list = [];
+            for (var c = 0; c < nodes.length; c++) {
+
+                var transform = {};
+                if (nodes[c].translation) {
+                    transform.translation = nodes[c].translation;
+                }
+                if (nodes[c].rotation) {
+                    transform.rotation = nodes[c].rotation;
+                }
+                if (nodes[c].scale) {
+                    transform.scale = nodes[c].scale;
+                }
+
+                var node = {
+                    name: nodes[c].name,
+                    index: c,
+                    transform: transform,
+                    children: nodes[c].children ? nodes[c].children : []
+                };
+
+                this._list.push(node);
+            }
+
+            for (var d = 0; d < this._list.length; d++) {
+                if (this._list[d].children.length > 0) {
+                    for (var e = 0; e < this._list[d].children.length; e++) {
+                        // replace indices with nodes
+                        this._list[d].children[e] = this._list[this._list[d].children[e]];
+                        this._list[d].children[e].parent = this._list[d];
+                    }
+                }
+            }
+
+            for (var f = 0; f < this._list.length; f++) {
+                if (!this._list[f].parent) {
+                    this._list[f].parent = this._tree;
+                    this._tree.children.push(this._list[f]);
+                }
+            }
+
+            this.renderNode(this._tree);
+        }
+    }]);
+
+    return AnimationNodes;
+}(HTMLElement);
+
+exports.default = AnimationNodes;
+
+if (!customElements.get('aviz-nodes-list')) {
+    customElements.define('aviz-nodes-list', AnimationNodes);
+}
+
+},{"./template.js":7}],7:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    get: function get() {
+        return "<div class=\"node-header\"></div>\n            <div class=\"breadcrumbs\"></div>\n            <ul class=\"nodes-list\">\n            </ul>";
+    }
+};
+
+},{}],8:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _template = require('./template.js');
+
+var _template2 = _interopRequireDefault(_template);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var AnimationPlaybackControls = function (_HTMLElement) {
+    _inherits(AnimationPlaybackControls, _HTMLElement);
+
+    _createClass(AnimationPlaybackControls, null, [{
+        key: 'observedAttributes',
+        get: function get() {
+            return [];
+        }
+    }]);
+
+    function AnimationPlaybackControls() {
+        _classCallCheck(this, AnimationPlaybackControls);
+
+        var _this = _possibleConstructorReturn(this, (AnimationPlaybackControls.__proto__ || Object.getPrototypeOf(AnimationPlaybackControls)).call(this));
+
+        _this._playing = false;
+        _this.dom = {};
+        _this._duration = 0;
+
+        document.body.addEventListener('drop', function (e) {
+            return _this.onFileDropped(e);
+        }, false);
+        document.body.addEventListener("dragover", function (e) {
+            return _this.onFileHover(e);
+        }, false);
+        //document.body.addEventListener("dragleave", e => this.onFileHover(e), false);
+        return _this;
+    }
+
+    _createClass(AnimationPlaybackControls, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            var _this2 = this;
+
+            this.innerHTML = _template2.default.get();
+            this.dom.buttons = {};
+            this.dom.buttons.fastForwardBtn = this.querySelector('.fast-forward');
+            this.dom.buttons.fastBackwardBtn = this.querySelector('.fast-backward');
+            this.dom.buttons.stepForwardBtn = this.querySelector('.step-forward');
+            this.dom.buttons.stepBackwardBtn = this.querySelector('.step-backward');
+            this.dom.buttons.playpauseBtn = this.querySelector('.playpause');
+            this.dom.buttonContainer = this.querySelector('.button-container');
+            this.dom.loadGLTFButton = this.querySelector('.load-button');
+            this.dom.timeDisplay = this.querySelector('.time-display');
+            this.dom.fileInput = this.querySelector('.file-input');
+            this.dom.buttonContainer.addEventListener('click', function (e) {
+                return _this2.onButtonClick(e);
+            });
+            this.dom.fileInput.addEventListener('change', function (e) {
+                return _this2.onFileInputChange(e);
+            });
+            this.togglePlay(false);
+        }
+    }, {
+        key: 'onFileDropped',
+        value: function onFileDropped(event) {
+            event.stopPropagation();
+            event.preventDefault();
+            if (!event.dataTransfer.files[0]) {
+                return;
+            }
+            var e = new CustomEvent(AnimationPlaybackControls.LOAD_GLTF, { 'detail': { files: event.dataTransfer.files, inputevent: event } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: 'onFileHover',
+        value: function onFileHover(event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+    }, {
+        key: 'onFileInputChange',
+        value: function onFileInputChange(event) {
+            if (!event.target.files[0]) {
+                return;
+            }
+            var e = new CustomEvent(AnimationPlaybackControls.LOAD_GLTF, { 'detail': { files: event.target.files, inputevent: event } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: 'onButtonClick',
+        value: function onButtonClick(event) {
+            var action = '';
+            switch (event.target) {
+                case this.dom.buttons.fastBackwardBtn:
+                    action = AnimationPlaybackControls.FAST_BACKWARD;
+                    break;
+
+                case this.dom.buttons.fastForwardBtn:
+                    action = AnimationPlaybackControls.FAST_FORWARD;
+                    break;
+
+                case this.dom.buttons.stepBackwardBtn:
+                    action = AnimationPlaybackControls.STEP_BACKWARD;
+                    break;
+
+                case this.dom.buttons.stepForwardBtn:
+                    action = AnimationPlaybackControls.STEP_FORWARD;
+                    break;
+
+                case this.dom.buttons.playpauseBtn:
+                    this._playing = !this._playing;
+                    this.togglePlay(this._playing);
+
+                    if (this._playing) {
+                        action = AnimationPlaybackControls.PLAY;
+                    } else {
+                        action = AnimationPlaybackControls.PAUSE;
+                    }
+                    break;
+            }
+
+            // lastly, turn off playback if we're stepping through
+            if (event.target !== this.dom.buttons.playpauseBtn) {
+                this.togglePlay(false);
+                this._playing = false;
+            }
+
+            var e = new CustomEvent(AnimationPlaybackControls.CONTROL_CLICKED, {
+                'detail': { action: action, isPlaying: this._playing } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: 'togglePlay',
+        value: function togglePlay(playing) {
+            if (playing) {
+                this.dom.buttons.playpauseBtn.classList.remove('play');
+                this.dom.buttons.playpauseBtn.classList.add('pause');
+            } else {
+                this.dom.buttons.playpauseBtn.classList.remove('pause');
+                this.dom.buttons.playpauseBtn.classList.add('play');
+            }
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {}
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback(attributeName, oldValue, newValue, namespace) {}
+    }, {
+        key: 'adoptedCallback',
+        value: function adoptedCallback(oldDocument, newDocument) {}
+    }, {
+        key: 'time',
+        set: function set(value) {
+            if (this._duration === 0) {
+                return;
+            }
+
+            if (value > this._duration) {
+                value = value % this._duration;
+            }
+            this.dom.timeDisplay.innerText = value.toFixed(3) + ' / ' + this._duration.toFixed(3);
+        }
+    }, {
+        key: 'duration',
+        set: function set(value) {
+            this._duration = value;
+        }
+    }]);
+
+    return AnimationPlaybackControls;
+}(HTMLElement);
+
+exports.default = AnimationPlaybackControls;
+
+AnimationPlaybackControls.CONTROL_CLICKED = 'onControlClicked';
+AnimationPlaybackControls.LOAD_GLTF = 'onLoadGLTF';
+AnimationPlaybackControls.ANIMATION_SELECTED = 'onAnimationSelected';
+AnimationPlaybackControls.PLAY = 'play';
+AnimationPlaybackControls.PAUSE = 'pause';
+AnimationPlaybackControls.FAST_FORWARD = 'fastforward';
+AnimationPlaybackControls.FAST_BACKWARD = 'fastbackward';
+AnimationPlaybackControls.STEP_FORWARD = 'stepforward';
+AnimationPlaybackControls.STEP_BACKWARD = 'stepbackward';
+
+if (!customElements.get('aviz-playback-controls')) {
+    customElements.define('aviz-playback-controls', AnimationPlaybackControls);
+}
+
+},{"./template.js":9}],9:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    get: function get() {
+        return "<div class=\"button-container\">\n                    <div class=\"fast-backward btn\"></div>\n                    <div class=\"step-backward btn\"></div>\n                    <div class=\"playpause btn\"></div>\n                    <div class=\"step-forward btn\"></div>\n                    <div class=\"fast-forward btn\"></div>\n                </div>\n                <div class=\"time-display\">- / -</div>\n                <div class=\"load-button\">\n                    <div>Load glTF...</div>\n                    <input type=\"file\" class=\"file-input\" id=\"files\" name=\"files[]\" accept=\".gltf, .bin, .png, .jpg, .jpeg, .gif\" multiple />\n                </div>";
+    }
+};
+
+},{}],10:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _template = require('./template.js');
+
+var _template2 = _interopRequireDefault(_template);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var AnimationSampleGLTFs = function (_HTMLElement) {
+    _inherits(AnimationSampleGLTFs, _HTMLElement);
+
+    _createClass(AnimationSampleGLTFs, null, [{
+        key: 'observedAttributes',
+        get: function get() {
+            return [];
+        }
+    }]);
+
+    function AnimationSampleGLTFs() {
+        _classCallCheck(this, AnimationSampleGLTFs);
+
+        var _this = _possibleConstructorReturn(this, (AnimationSampleGLTFs.__proto__ || Object.getPrototypeOf(AnimationSampleGLTFs)).call(this));
+
+        _this.dom = {};
+        return _this;
+    }
+
+    _createClass(AnimationSampleGLTFs, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            var _this2 = this;
+
+            this.innerHTML = _template2.default.get();
+            this.dom.list = this.querySelector('.container');
+            this.dom.list.addEventListener('click', function (e) {
+                return _this2.onFileClicked(e);
+            });
+
+            var loader = new XMLHttpRequest();
+            loader.open('GET', this.getAttribute('manifest'), true);
+            loader.onload = function (e) {
+                return _this2.onFileManifestLoaded(e);
+            };
+            loader.send();
+        }
+    }, {
+        key: 'onFileManifestLoaded',
+        value: function onFileManifestLoaded(loader) {
+            var files = JSON.parse(loader.target.response);
+            for (var c = 0; c < files.length; c++) {
+                var item = document.createElement('p');
+                item.dataset.uri = files[c].uri;
+                item.innerHTML = '<a href="#">' + files[c].name + '</a>';
+                this.dom.list.appendChild(item);
+            }
+        }
+    }, {
+        key: 'onFileClicked',
+        value: function onFileClicked(event) {
+            if (!event.target.parentNode.dataset.uri) {
+                return;
+            }
+            var e = new CustomEvent(AnimationSampleGLTFs.SELECT_REMOTE_FILE, { 'detail': { uri: event.target.parentNode.dataset.uri } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {}
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback(attributeName, oldValue, newValue, namespace) {}
+    }, {
+        key: 'adoptedCallback',
+        value: function adoptedCallback(oldDocument, newDocument) {}
+    }]);
+
+    return AnimationSampleGLTFs;
+}(HTMLElement);
+
+exports.default = AnimationSampleGLTFs;
+
+AnimationSampleGLTFs.SELECT_REMOTE_FILE = 'onRemoteFileSelected';
+
+if (!customElements.get('aviz-sample-gltfs')) {
+    customElements.define('aviz-sample-gltfs', AnimationSampleGLTFs);
+}
+
+},{"./template.js":11}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    get: function get() {
+        return "<h3>Sample glTF files</h3>\n                <div class=\"container\"></div>\n                <p>Alternately, drag & drop or load your glTF 2.0 files. Sorry, .glb files are not supported at this time</p>\n                <p>When loading, please drag/drop/multiselect all files simultaneously (gltf, bin, images)</p>";
+    }
+};
+
+},{}],12:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _template = require('./template.js');
+
+var _template2 = _interopRequireDefault(_template);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var AnimationSceneInfo = function (_HTMLElement) {
+    _inherits(AnimationSceneInfo, _HTMLElement);
+
+    _createClass(AnimationSceneInfo, null, [{
+        key: 'observedAttributes',
+        get: function get() {
+            return ['filename'];
+        }
+    }]);
+
+    function AnimationSceneInfo() {
+        _classCallCheck(this, AnimationSceneInfo);
+
+        var _this = _possibleConstructorReturn(this, (AnimationSceneInfo.__proto__ || Object.getPrototypeOf(AnimationSceneInfo)).call(this));
+
+        _this._playing = false;
+        _this.dom = {};
+        _this.rightHandedCoordinates = false;
+        return _this;
+    }
+
+    _createClass(AnimationSceneInfo, [{
+        key: 'onSwitchCoordinateSystem',
+        value: function onSwitchCoordinateSystem(event) {
+            this.rightHandedCoordinates = !this.rightHandedCoordinates;
+            if (this.rightHandedCoordinates) {
+                this.dom.coordinatesystem.innerText = 'use left-handed system on load';
+            } else {
+                this.dom.coordinatesystem.innerText = 'use right-handed system on load';
+            }
+
+            var e = new CustomEvent(AnimationSceneInfo.SWITCH_COORDINATE_SYSTEM, { 'detail': { rightHanded: this.rightHandedCoordinates } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            var _this2 = this;
+
+            this.innerHTML = _template2.default.get();
+            this.dom.filename = this.querySelector('.filename');
+            this.dom.coordinatesystem = this.querySelector('.coordinate-system');
+            this.dom.coordinatesystem.addEventListener('click', function (e) {
+                return _this2.onSwitchCoordinateSystem(e);
+            });
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {}
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback(attributeName, oldValue, newValue, namespace) {
+            switch (attributeName) {
+                case 'filename':
+                    this.dom.filename.innerText = newValue;
+                    break;
+            }
+        }
+    }, {
+        key: 'adoptedCallback',
+        value: function adoptedCallback(oldDocument, newDocument) {}
+    }]);
+
+    return AnimationSceneInfo;
+}(HTMLElement);
+
+exports.default = AnimationSceneInfo;
+
+AnimationSceneInfo.SWITCH_COORDINATE_SYSTEM = 'onSwitchCoordinateSystem';
+
+if (!customElements.get('aviz-scene-info')) {
+    customElements.define('aviz-scene-info', AnimationSceneInfo);
+}
+
+},{"./template.js":13}],13:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    get: function get() {
+        return "<span class=\"filename\"></span>\n                <a class=\"coordinate-system\" href=\"#\">use right-handed system on load</a>";
+    }
+};
+
+},{}],14:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _template = require('./template.js');
+
+var _template2 = _interopRequireDefault(_template);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var AnimationTimeline = function (_HTMLElement) {
+    _inherits(AnimationTimeline, _HTMLElement);
+
+    _createClass(AnimationTimeline, [{
+        key: 'destroy',
+        value: function destroy() {
+            this.dom.container.innerHTML = '';
+        }
+    }, {
+        key: 'createPlaybackLine',
+        value: function createPlaybackLine() {
+            this.dom.playbackLine = document.createElement('div');
+            this.dom.playbackLine.classList.add('playback-line');
+            this.dom.container.appendChild(this.dom.playbackLine);
+        }
+    }, {
+        key: 'data',
+        set: function set(timeline) {
+            this.destroy();
+
+            this.timelineWidth = 0;
+            this.createPlaybackLine();
+            this.timeline = timeline;
+            this._populateDeltas(this.timeline);
+            this._drawTimelineLabel();
+            for (var c = 0; c < this.timeline.animations.length; c++) {
+                this._createAnimationHeader(c);
+                for (var track in this.timeline.animations[c].animation.tracks) {
+                    this._createTrack(c, track, this.timeline.animations[c].animation.tracks[track]);
+                }
+            }
+
+            this.dom.playbackLine.style.height = this.dom.container.scrollHeight + 'px';
+            this.currentTime = 0;
+            this._onTimelineScroll();
+        }
+    }, {
+        key: 'currentTime',
+        set: function set(seconds) {
+            if (this.timeline && !this._draggingPlayhead) {
+                this.relativeTime = seconds % this.timeline.duration;
+                this.dom.playbackLine.style.left = this.relativeTime * this.pixelsPerSecond + 'px';
+                this.dom.playbackHead.style.left = this.relativeTime * this.pixelsPerSecond - 7 + 'px';
+            }
+        }
+    }], [{
+        key: 'observedAttributes',
+        get: function get() {
+            return [];
+        }
+    }]);
+
+    function AnimationTimeline() {
+        _classCallCheck(this, AnimationTimeline);
+
+        var _this = _possibleConstructorReturn(this, (AnimationTimeline.__proto__ || Object.getPrototypeOf(AnimationTimeline)).call(this));
+
+        _this.dom = {};
+
+        _this._draggingPlayhead = false;
+        _this.selectedTrack;
+        _this.ticks = .1; // of a second
+        _this.pixelsPerSecond = 200;
+        _this.keyframeSize = {
+            width: 5,
+            height: 5
+        };
+        _this.deltaRanges = {};
+        return _this;
+    }
+
+    _createClass(AnimationTimeline, [{
+        key: 'connectedCallback',
+        value: function connectedCallback() {
+            var _this2 = this;
+
+            this.innerHTML = _template2.default.get();
+            this.dom.container = this.querySelector('.timeline-view');
+            this.dom.axislabel = this.querySelector('.timeline-timelabels .tick-container');
+            this.dom.zoomSlider = this.querySelector('.zoom');
+            this.dom.timelineZoomLabel = this.querySelector('.timeline-timelabels canvas');
+            this.dom.playbackLine = this.querySelector('.timeline-view .playback-line');
+            this.dom.playbackHead = this.querySelector('.timeline-timelabels .tick-container .playback-head');
+
+            this.dom.info = {
+                time: this.querySelector('.keyframe-info .time .val'),
+                frame: this.querySelector('.keyframe-info .frame .val'),
+                position: {
+                    x: this.querySelector('.keyframe-info .position .x-val'),
+                    y: this.querySelector('.keyframe-info .position .y-val'),
+                    z: this.querySelector('.keyframe-info .position .z-val'),
+                    d: this.querySelector('.keyframe-info .position .d-val')
+                },
+                rotation: {
+                    x: this.querySelector('.keyframe-info .rotation .x-val'),
+                    y: this.querySelector('.keyframe-info .rotation .y-val'),
+                    z: this.querySelector('.keyframe-info .rotation .z-val'),
+                    d: this.querySelector('.keyframe-info .rotation .d-val')
+                },
+                scale: {
+                    x: this.querySelector('.keyframe-info .scale .x-val'),
+                    y: this.querySelector('.keyframe-info .scale .y-val'),
+                    z: this.querySelector('.keyframe-info .scale .z-val'),
+                    d: this.querySelector('.keyframe-info .scale .d-val')
+                }
+            };
+
+            this.dom.container.addEventListener('scroll', function (e) {
+                return _this2._onTimelineScroll(e);
+            });
+            this.dom.zoomSlider.addEventListener('input', function (e) {
+                return _this2._onZoom(e);
+            });
+            this.dom.axislabel.addEventListener('mousedown', function (e) {
+                return _this2._onLabelTrackMouseDown(e);
+            });
+            this.addEventListener('mouseup', function (e) {
+                return _this2._onLabelTrackMouseUp(e);
+            });
+            this.addEventListener('mousemove', function (e) {
+                return _this2._onLabelTrackMouseMove(e);
+            });
+        }
+    }, {
+        key: '_createAnimationHeader',
+        value: function _createAnimationHeader(animationIndex) {
+            var header = document.createElement('DIV');
+            header.classList.add('animation-header');
+            header.innerHTML = '<span>Animation ' + animationIndex + '</span>';
+            this.dom.container.appendChild(header);
+        }
+    }, {
+        key: '_createTrack',
+        value: function _createTrack(animationIndex, name, data) {
+            var _this3 = this;
+
+            var trackcontainer = document.createElement('DIV');
+            trackcontainer.dataset.name = name;
+            trackcontainer.dataset.animation = animationIndex;
+            trackcontainer.addEventListener('click', function (e) {
+                return _this3._onTrackClick(e);
+            });
+            trackcontainer.addEventListener('mousemove', function (e) {
+                return _this3._onTrackHover(e);
+            });
+            trackcontainer.className = 'timeline-track';
+            var canvas = document.createElement('CANVAS');
+            var tracklabel = document.createElement('DIV');
+            tracklabel.classList.add('track-label');
+
+            /*let trackVisibilityToggle = document.createElement('div');
+            trackVisibilityToggle.classList.add('icon-eye');
+            trackVisibilityToggle.classList.add('on');
+            trackVisibilityToggle.addEventListener('click', e => this._onTrackVisibilityClick(e));
+            tracklabel.appendChild(trackVisibilityToggle);*/
+
+            var trackName = document.createElement('span');
+            trackName.innerText = name;
+            tracklabel.appendChild(trackName);
+            this.dom['animation-' + animationIndex + '-track-' + name] = canvas;
+            this._drawTrack(animationIndex, name, data);
+            trackcontainer.appendChild(tracklabel);
+            trackcontainer.appendChild(canvas);
+            this.dom.container.appendChild(trackcontainer);
+        }
+    }, {
+        key: '_drawTrack',
+        value: function _drawTrack(animationIndex, name, data) {
+            var canvas = this.dom['animation-' + animationIndex + '-track-' + name];
+            this.timelineWidth = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
+            canvas.width = this.timelineWidth;
+            canvas.height = 16;
+            var ctx = canvas.getContext('2d');
+            for (var c = 0; c < data.length; c++) {
+                if (data[c].transform.translation) {
+                    var alpha = (data[c].transform.deltas.position - this.deltaRanges[name].position.min) / (this.deltaRanges[name].position.max - this.deltaRanges[name].position.min);
+                    ctx.fillStyle = 'rgba(0, 255, 0, ' + (alpha ? alpha : 0) + ')';
+                    ctx.fillRect(data[c].time * this.pixelsPerSecond, 0, this.keyframeSize.width, this.keyframeSize.height);
+                    ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
+                    ctx.lineWidth = .25;
+                    ctx.strokeRect(data[c].time * this.pixelsPerSecond, 0, this.keyframeSize.width, this.keyframeSize.height);
+                }
+                if (data[c].transform.rotation) {
+                    var _alpha = (data[c].transform.deltas.rotation - this.deltaRanges[name].rotation.min) / (this.deltaRanges[name].rotation.max - this.deltaRanges[name].rotation.min);
+                    ctx.fillStyle = 'rgba(255, 165, 0, ' + (_alpha ? _alpha : 0) + ')';
+                    ctx.fillRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width + 1, this.keyframeSize.width, this.keyframeSize.height);
+                    ctx.strokeStyle = 'rgba(255, 165, 0, 1)';
+                    ctx.lineWidth = .25;
+                    ctx.strokeRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width + 1, this.keyframeSize.width, this.keyframeSize.height);
+                }
+                if (data[c].transform.scale) {
+                    var _alpha2 = (data[c].transform.deltas.scaling - this.deltaRanges[name].scaling.min) / (this.deltaRanges[name].scaling.max - this.deltaRanges[name].scaling.min);
+                    ctx.fillStyle = 'rgba(255, 255, 0, ' + (_alpha2 ? _alpha2 : 0) + ')';
+                    ctx.fillRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width * 2 + 1, this.keyframeSize.width, this.keyframeSize.height);
+                    ctx.strokeStyle = 'rgba(255, 255, 0, 1)';
+                    ctx.lineWidth = .25;
+                    ctx.strokeRect(data[c].time * this.pixelsPerSecond, this.keyframeSize.width * 2 + 1, this.keyframeSize.width, this.keyframeSize.height);
+                }
+            }
+        }
+    }, {
+        key: '_drawTimelineLabel',
+        value: function _drawTimelineLabel() {
+            var canvas = this.dom.timelineZoomLabel;
+            canvas.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width;
+            canvas.height = 15;
+            var ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'white';
+
+            for (var c = this.ticks; c < this.timeline.duration; c += this.ticks) {
+                var tHeight = 8;
+                var tWidth = 1;
+                if (Math.abs(Number(Math.round(c + 'e2') + 'e-2') === Math.round(c))) {
+                    // just trying to test if an integer, stupid precision loss
+                    tHeight = 15;
+                    tWidth = 3;
+                }
+                ctx.fillRect(c * this.pixelsPerSecond, 0, tWidth, tHeight);
+            }
+        }
+    }, {
+        key: '_populateDeltas',
+        value: function _populateDeltas(timeline) {
+            for (var d = 0; d < timeline.animations.length; d++) {
+                for (var track in timeline.animations[d].animation.tracks) {
+                    if (!this.deltaRanges[track]) {
+                        this.deltaRanges[track] = {};
+                    }
+
+                    for (var c = 1; c < timeline.animations[d].animation.tracks[track].length; c++) {
+                        var t1 = timeline.animations[d].animation.tracks[track][c].transform;
+                        var t0 = timeline.animations[d].animation.tracks[track][c - 1].transform;
+
+                        var dPos = 0;
+                        if (t1.translation && t0.translation) {
+                            dPos = Math.sqrt(Math.pow(t1.translation.x - t0.translation.x, 2) + Math.pow(t1.translation.y - t0.translation.y, 2) + Math.pow(t1.translation.z - t0.translation.z, 2));
+                        }
+
+                        var dRot = 0;
+                        if (t1.rotation && t0.rotation) {
+                            dRot = Math.sqrt(Math.pow(t1.rotation.x - t0.rotation.x, 2) + Math.pow(t1.rotation.y - t0.rotation.y, 2) + Math.pow(t1.rotation.z - t0.rotation.z, 2));
+                        }
+
+                        var dScale = 0;
+                        if (t1.scale && t0.scale) {
+                            dScale = Math.sqrt(Math.pow(t1.scale.x - t0.scale.x, 2) + Math.pow(t1.scale.y - t0.scale.y, 2) + Math.pow(t1.scale.z - t0.scale.z, 2));
+                        }
+
+                        timeline.animations[d].animation.tracks[track][c].transform.deltas = { position: dPos, rotation: dRot, scaling: dScale };
+
+                        if (!this.deltaRanges[track].rotation) {
+                            this.deltaRanges[track].rotation = {};
+                            this.deltaRanges[track].rotation.min = 0;
+                            this.deltaRanges[track].rotation.max = dRot;
+                        } else {
+                            if (this.deltaRanges[track].rotation.min > dRot) {
+                                this.deltaRanges[track].rotation.min = dRot;
+                            }
+                            if (this.deltaRanges[track].rotation.max < dRot) {
+                                this.deltaRanges[track].rotation.max = dRot;
+                            }
+                        }
+
+                        if (!this.deltaRanges[track].position) {
+                            this.deltaRanges[track].position = {};
+                            this.deltaRanges[track].position.min = 0;
+                            this.deltaRanges[track].position.max = dPos;
+                        } else {
+                            if (this.deltaRanges[track].position.min > dPos) {
+                                this.deltaRanges[track].position.min = dPos;
+                            }
+                            if (this.deltaRanges[track].position.max < dPos) {
+                                this.deltaRanges[track].position.max = dPos;
+                            }
+                        }
+
+                        if (!this.deltaRanges[track].scaling) {
+                            this.deltaRanges[track].scaling = {};
+                            this.deltaRanges[track].scaling.min = 0;
+                            this.deltaRanges[track].scaling.max = dScale;
+                        } else {
+                            if (this.deltaRanges[track].scaling.min > dScale) {
+                                this.deltaRanges[track].scaling.min = dScale;
+                            }
+                            if (this.deltaRanges[track].scaling.max < dScale) {
+                                this.deltaRanges[track].scaling.max = dScale;
+                            }
+                        }
+                    }
+                    // first track has no delta, so give it maximum delta
+                    timeline.animations[d].animation.tracks[track][0].transform.deltas = {
+                        position: this.deltaRanges[track].position.max,
+                        rotation: this.deltaRanges[track].rotation.max,
+                        scaling: this.deltaRanges[track].scaling.max
+                    };
+                }
+            }
+        }
+    }, {
+        key: '_onTimelineScroll',
+        value: function _onTimelineScroll(event) {
+            this.dom.axislabel.scrollLeft = this.dom.container.scrollLeft;
+
+            var labels = this.querySelectorAll('.track-label');
+            for (var c = 0; c < labels.length; c++) {
+                labels[c].style.paddingLeft = this.dom.container.scrollLeft + this.keyframeSize.width + 15 + 'px';
+            }
+
+            var animheaders = this.querySelectorAll('.animation-header span');
+            for (var _c = 0; _c < animheaders.length; _c++) {
+                animheaders[_c].style.paddingLeft = this.dom.container.scrollLeft + 5 + 'px';
+                animheaders[_c].parentNode.style.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width - 15 + 'px';
+            }
+
+            var tracks = this.querySelectorAll('.timeline-track');
+            for (var _c2 = 0; _c2 < tracks.length; _c2++) {
+                tracks[_c2].style.width = this.timeline.duration * this.pixelsPerSecond + this.keyframeSize.width + 5 + 'px';
+            }
+        }
+    }, {
+        key: '_onZoom',
+        value: function _onZoom(event) {
+            this.pixelsPerSecond = event.target.value;
+            this._drawTimelineLabel();
+
+            for (var c = 0; c < this.timeline.animations.length; c++) {
+                for (var track in this.timeline.animations[c].animation.tracks) {
+                    this._drawTrack(c, track, this.timeline.animations[c].animation.tracks[track]);
+                }
+            }
+            this._onTimelineScroll(); // need track resizing
+        }
+    }, {
+        key: '_onTrackClick',
+        value: function _onTrackClick(event) {
+            if (this.selectedTrack) {
+                this.selectedTrack.classList.remove('selected');
+            }
+
+            if (this.selectedTrack === event.currentTarget) {
+                this.selectedTrack = null;
+                return;
+            }
+            this.selectedTrack = event.currentTarget;
+            this.selectedTrack.classList.add('selected');
+
+            var e = new CustomEvent(AnimationTimeline.TRACK_SELECTED, { 'detail': { name: event.currentTarget.dataset.name } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: '_onTrackVisibilityClick',
+        value: function _onTrackVisibilityClick(event) {
+            event.stopPropagation();
+            var visible = void 0;
+            if (event.target.classList.contains('on')) {
+                event.target.classList.remove('on');
+                event.target.classList.add('off');
+                visible = false;
+            } else {
+                event.target.classList.remove('off');
+                event.target.classList.add('on');
+                visible = true;
+            }
+
+            var e = new CustomEvent(AnimationTimeline.TRACK_PLAYBACK_CHANGED, {
+                'detail': {
+                    name: event.target.parentNode.parentNode.dataset.name,
+                    visible: visible,
+                    playbacktime: this.relativeTime / this.timeline.duration
+                } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: '_onTrackHover',
+        value: function _onTrackHover(event) {
+            var time = (event.offsetX - this.keyframeSize.width) / this.pixelsPerSecond;
+            var track = this.timeline.animations[parseInt(event.currentTarget.dataset.animation)].animation.tracks[event.currentTarget.dataset.name];
+            var timeIndex = void 0;
+            for (var c = 0; c < track.length; c++) {
+                if (track[c].time >= time) {
+                    this.dom.info.time.innerText = track[c].time.toFixed(3);
+                    this.dom.info.frame.innerText = c + 1 + ' / ' + track.length;
+
+                    if (track[c].transform.translation) {
+                        this.dom.info.position.x.innerText = track[c].transform.translation.x.toFixed(3);
+                        this.dom.info.position.y.innerText = track[c].transform.translation.y.toFixed(3);
+                        this.dom.info.position.z.innerText = track[c].transform.translation.z.toFixed(3);
+                        this.dom.info.position.d.innerText = track[c].transform.deltas.position.toFixed(3);
+                    } else {
+                        this._clearInfoValues('position');
+                    }
+
+                    if (track[c].transform.rotation) {
+                        this.dom.info.rotation.x.innerText = track[c].transform.rotation.x.toFixed(3);
+                        this.dom.info.rotation.y.innerText = track[c].transform.rotation.y.toFixed(3);
+                        this.dom.info.rotation.z.innerText = track[c].transform.rotation.z.toFixed(3);
+                        this.dom.info.rotation.d.innerText = track[c].transform.deltas.rotation.toFixed(3);
+                    } else {
+                        this._clearInfoValues('rotation');
+                    }
+
+                    if (track[c].transform.scale) {
+                        this.dom.info.scale.x.innerText = track[c].transform.scale.x.toFixed(3);
+                        this.dom.info.scale.y.innerText = track[c].transform.scale.y.toFixed(3);
+                        this.dom.info.scale.z.innerText = track[c].transform.scale.z.toFixed(3);
+                        this.dom.info.scale.d.innerText = track[c].transform.deltas.scaling.toFixed(3);
+                    } else {
+                        this._clearInfoValues('scale');
+                    }
+                    return;
+                }
+            }
+        }
+    }, {
+        key: '_onLabelTrackMouseDown',
+        value: function _onLabelTrackMouseDown(event) {
+            this._draggingPlayhead = true;
+        }
+    }, {
+        key: '_onLabelTrackMouseUp',
+        value: function _onLabelTrackMouseUp(event) {
+            if (this._draggingPlayhead) {
+                this._draggingPlayhead = false;
+                var bounds = event.currentTarget.getBoundingClientRect();
+                this._scrubTimeline(event.clientX - bounds.left, true);
+            }
+        }
+    }, {
+        key: '_onLabelTrackMouseMove',
+        value: function _onLabelTrackMouseMove(event) {
+            if (this._draggingPlayhead) {
+                var bounds = event.currentTarget.getBoundingClientRect();
+                this._scrubTimeline(event.clientX - bounds.left, false);
+            }
+        }
+    }, {
+        key: '_scrubTimeline',
+        value: function _scrubTimeline(posX, endscrub) {
+            var bounds = event.currentTarget.getBoundingClientRect();
+            if (posX > this.timelineWidth) {
+                posX = this.timelineWidth;
+            }
+            this.dom.playbackLine.style.left = posX + 'px';
+            this.dom.playbackHead.style.left = posX - 7 + 'px';
+
+            var time = (posX - 1) / this.pixelsPerSecond;
+            if (time < 0) {
+                time = 0;
+            }
+            if (time > this.timeline.duration) {
+                time = this.timeline.duration;
+            }
+
+            var e = new CustomEvent(AnimationTimeline.SCRUB_TIMELINE, {
+                'detail': {
+                    resumeplayback: endscrub,
+                    playbacktime: time,
+                    playbackratio: time / this.timeline.duration
+                } });
+            this.dispatchEvent(e);
+        }
+    }, {
+        key: '_clearInfoValues',
+        value: function _clearInfoValues(transformTypes) {
+            if (typeof transformTypes === 'string') {
+                transformTypes = [transformTypes];
+            }
+
+            for (var c = 0; c < transformTypes.length; c++) {
+                this.dom.info[transformTypes].x.innerText = '-';
+                this.dom.info[transformTypes].y.innerText = '-';
+                this.dom.info[transformTypes].z.innerText = '-';
+                this.dom.info[transformTypes].d.innerText = '-';
+            }
+        }
+    }, {
+        key: 'disconnectedCallback',
+        value: function disconnectedCallback() {}
+    }, {
+        key: 'attributeChangedCallback',
+        value: function attributeChangedCallback(attributeName, oldValue, newValue, namespace) {}
+    }, {
+        key: 'adoptedCallback',
+        value: function adoptedCallback(oldDocument, newDocument) {}
+    }]);
+
+    return AnimationTimeline;
+}(HTMLElement);
+
+exports.default = AnimationTimeline;
+
+AnimationTimeline.TRACK_SELECTED = 'onTrackSelected';
+AnimationTimeline.SCRUB_TIMELINE = 'onScrubTimeline';
+AnimationTimeline.TRACK_PLAYBACK_CHANGED = 'onTrackPlaybackChanged';
+
+if (!customElements.get('aviz-timeline')) {
+    customElements.define('aviz-timeline', AnimationTimeline);
+}
+
+},{"./template.js":15}],15:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    get: function get() {
+        return "<div class=\"timeline\">\n                            <div class=\"timeline-view\">\n                            </div> \n                            <div class=\"timeline-timelabels\">\n                                <div class=\"tick-container\">\n                                    <canvas></canvas>\n                                    <div class=\"playback-head\"></div>\n                                </div>\n                                <input class=\"zoom\" min=\"20\" max=\"1000\" value=\"200\" type=\"range\"></div>\n                            </div>\n                        </div>\n                        <div class=\"keyframe-info\">\n                            <div class=\"item\">\n                                <h4 class=\"time\">Time: <span class=\"val\">-</span></h4>\n                                <h4 class=\"frame\">Frame: <span class=\"val\">-/-</span></h4>\n                            </div>\n                            <div class=\"item position\">\n                                <h4>Position</h4>\n                                <div class=\"axis\"><span class=\"label\">x</span><span class=\"x-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">y</span><span class=\"y-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">z</span><span class=\"z-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">\u25B2</span><span class=\"d-val\">-</span></div>\n                            </div>\n                            <div class=\"item rotation\">\n                                <h4>Rotation</h4>\n                                <div class=\"axis\"><span class=\"label\">x</span><span class=\"x-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">y</span><span class=\"y-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">z</span><span class=\"z-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">\u25B2</span><span class=\"d-val\">-</span></div>\n                            </div>\n                            <div class=\"item scale\">\n                                <h4>Scale</h4>\n                                <div class=\"axis\"><span class=\"label\">x</span><span class=\"x-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">y</span><span class=\"y-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">z</span><span class=\"z-val\">-</span></div>\n                                <div class=\"axis\"><span class=\"label\">\u25B2</span><span class=\"d-val\">-</span></div>\n                            </div>\n                        </div>";
+    }
+};
+
+},{}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1046,7 +2419,7 @@ exports.default = {
     }
 };
 
-},{}],7:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -1217,7 +2590,7 @@ exports.default = GLTFFileLoader;
 
 GLTFFileLoader.LOADED = 'onGLTFLoaded';
 
-},{"../../node_modules/macgyvr/src/utils/eventlistener.js":4,"./gltfexploder.js":6}],8:[function(require,module,exports){
+},{"../../node_modules/macgyvr/src/utils/eventlistener.js":4,"./gltfexploder.js":16}],18:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };

@@ -1,11 +1,11 @@
-class AnimationSceneInfo extends HTMLElement {
+import Template from './template.js';
+
+export default class AnimationSceneInfo extends HTMLElement {
     static get observedAttributes() { return ['filename'] }
 
     constructor() {
         super();
         this._playing = false;
-        this.template = '<span class="filename"></span>\
-                         <a class="coordinate-system" href="#">use right-handed system on load</a>';
         this.dom = {};
         this.rightHandedCoordinates = false;
     }
@@ -23,7 +23,7 @@ class AnimationSceneInfo extends HTMLElement {
     }
 
     connectedCallback() {
-        this.innerHTML = this.template;
+        this.innerHTML = Template.get();
         this.dom.filename = this.querySelector('.filename');
         this.dom.coordinatesystem = this.querySelector('.coordinate-system');
         this.dom.coordinatesystem.addEventListener('click', e => this.onSwitchCoordinateSystem(e));
@@ -41,5 +41,8 @@ class AnimationSceneInfo extends HTMLElement {
 }
 
 AnimationSceneInfo.SWITCH_COORDINATE_SYSTEM = 'onSwitchCoordinateSystem';
-customElements.define('aviz-scene-info', AnimationSceneInfo);
+
+if (!customElements.get('aviz-scene-info')) {
+    customElements.define('aviz-scene-info', AnimationSceneInfo);
+}
 

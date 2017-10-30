@@ -2,6 +2,11 @@ import GLTFFileLoader from './io/gltffileloader.js';
 import GLTFExploder from './io/gltfexploder.js';
 import BaseApplication from '../node_modules/macgyvr/src/baseapplication.js';
 import GLTFObject from './objects/gltfobject.js';
+import AnimationTimeline from './components/aviz-timeline/aviz-timeline.js';
+import AnimationPlaybackControls from './components/aviz-playback-controls/aviz-playback-controls.js';
+import AnimationSampleGLTFs from './components/aviz-sample-gltfs/aviz-sample-gltfs.js';
+import AnimationSceneInfo from './components/aviz-scene-info/aviz-scene-info.js';
+import AnimationNodesList from './components/aviz-nodes-list/aviz-nodes-list.js';
 
 export default class Application extends BaseApplication {
 
