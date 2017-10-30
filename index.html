@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>glTF2 Animation Visualizer 0.1.1</title>
+    <title>glTF2 Animation Visualizer 0.1.2</title>
 
+    <script src="node_modules/systemjs/dist/system-production.js"></script>
     <script src="libs.js"></script>
     <script src="app.js"></script>
     <link href="build.css" rel="stylesheet" />
@@ -29,19 +30,20 @@
 
 <script>
     new App.default(
-        document.querySelector('#scene'), {
-            scene: { useRightHandedSystem: false },
-            lights: 'arcrotate',
-            inspector: 'i',
-            components: {
-                controls: document.querySelector('aviz-playback-controls'),
-                timeline: document.querySelector('aviz-timeline'),
-                nodes: document.querySelector('aviz-nodes-list'),
-                scene: document.querySelector('canvas.scene'),
-                info: document.querySelector('aviz-scene-info'),
-                samples: document.querySelector('aviz-sample-gltfs')
-            }
-        } );
+            document.querySelector('#scene'), {
+                scene: { useRightHandedSystem: false },
+                lights: 'arcrotate',
+                inspector: 'i',
+                components: {
+                    controls: document.querySelector('aviz-playback-controls'),
+                    timeline: document.querySelector('aviz-timeline'),
+                    nodes: document.querySelector('aviz-nodes-list'),
+                    scene: document.querySelector('canvas.scene'),
+                    info: document.querySelector('aviz-scene-info'),
+                    samples: document.querySelector('aviz-sample-gltfs')
+                }
+            } );
+
 </script>
 
 </body>
